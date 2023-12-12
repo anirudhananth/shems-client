@@ -11,9 +11,8 @@ import { ResponsiveLine } from "@nivo/line"
 import { TableHead, TableRow, TableHeader, TableCell, TableBody, Table } from "@/components/ui/table"
 import { usePathname } from 'next/navigation'
 
-export default function Component({ href }) {
+export default function Component({ children }) {
   const pathname = usePathname();
-  const active = href === pathname;
   console.log(pathname);
 
   return (
@@ -24,8 +23,8 @@ export default function Component({ href }) {
         </div>
         <nav className="flex-1 px-6 py-4 bg-white overflow-y-auto">
           <Link className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:text-gray-700 ${
-                pathname == "" ? 'text-gray-700 rounded-md font-semibold bg-gray-200' : 'text-gray-500'
-              }`} href="#">
+                pathname == "/dashboard/main" ? 'text-gray-700 rounded-md font-semibold bg-gray-200' : 'text-gray-500'
+              }`} href="/dashboard/main">
             <LayoutDashboardIcon className="h-6 w-6" />
             <span className="mx-4 font-medium">Dashboard</span>
           </Link>
@@ -63,7 +62,8 @@ export default function Component({ href }) {
           <h2 className="text-2xl font-semibold text-gray-800">Dashboard</h2>
         </div>
         <div className="mt-10 px-6">
-          <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
+            { children }
+          {/* <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
                 <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
@@ -168,7 +168,7 @@ export default function Component({ href }) {
                 </TableRow>
               </TableBody>
             </Table>
-          </Card>
+          </Card> */}
         </div>
       </main>
     </div>

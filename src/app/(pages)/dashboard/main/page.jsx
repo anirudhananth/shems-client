@@ -16,51 +16,7 @@ export default function Component() {
   console.log(pathname);
 
   return (
-    <div className="flex h-screen bg-gray-200">
-      <div className="flex flex-col w-64 bg-white rounded-r-3xl overflow-hidden">
-        <div className="flex items-center justify-center h-20 shadow-md">
-          <FlagIcon className="h-12 w-12" />
-        </div>
-        <nav className="flex-1 px-6 py-4 bg-white overflow-y-auto">
-          <Link className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:text-gray-700 ${
-                pathname == "/dashboard/main" ? 'text-gray-700 rounded-md font-semibold bg-gray-200' : 'text-gray-500'
-              }`} href="/dashboard/main">
-            <LayoutDashboardIcon className="h-6 w-6" />
-            <span className="mx-4 font-medium">Dashboard</span>
-          </Link>
-          <Link
-            className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:text-gray-700 ${
-                pathname == "/dashboard/devices" ? 'text-gray-700 rounded-md font-semibold bg-gray-200' : 'text-gray-500'
-              }`}
-            href="/dashboard/devices"
-          >
-            <FolderIcon className="h-6 w-6" />
-            <span className="mx-4 font-medium">Devices</span>
-          </Link>
-          <Link
-            className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:text-gray-700 ${
-                pathname == "/dashboard/usage" ? 'text-gray-700 rounded-md font-semibold bg-gray-200' : 'text-gray-500'
-              }`}
-            href="/dashboard/usage"
-          >
-            <GroupIcon className="h-6 w-6" />
-            <span className="mx-4 font-medium">Usage</span>
-          </Link>
-          <Link
-            className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:text-gray-700 ${
-                pathname == "" ? 'text-gray-700 rounded-md font-semibold bg-gray-200' : 'text-gray-500'
-              }`}
-            href="/"
-          >
-            <CalendarIcon className="h-6 w-6" />
-            <span className="mx-4 font-medium">Log Out</span>
-          </Link>
-        </nav>
-      </div>
-      <main className="flex-1 flex flex-col overflow-hidden">
-        <div className="px-6 py-4 bg-white border-b-4 shadow-md">
-          <h2 className="text-2xl font-semibold text-gray-800">Dashboard</h2>
-        </div>
+    <div>
         <div className="mt-10 px-6">
           <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
             <Card>
@@ -169,7 +125,6 @@ export default function Component() {
             </Table>
           </Card>
         </div>
-      </main>
     </div>
   )
 }
