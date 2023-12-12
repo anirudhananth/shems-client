@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "generate": "openapi-generator generate -i http://localhost:8080/api-docs -g typescript-node -o ./server/api/definitions"
+    "generate": "openapi-generator generate -i http://localhost:8080/api-docs -g javascript -o ./server/api/definitions"
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^3.5.0",
