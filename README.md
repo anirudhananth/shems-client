@@ -2,8 +2,23 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, run the development server:
+First, install prereqs:
 
+```bash
+brew install openapi-generator
+```
+
+Next, generate client code for API definitions
+
+```bash
+bun run generate
+# or
+yarn generate
+# or
+npm run generate
+```
+
+Then, run the dev server
 ```bash
 npm run dev
 # or
