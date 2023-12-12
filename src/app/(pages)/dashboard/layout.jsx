@@ -17,9 +17,9 @@ export default function Component({ children }) {
 
   return (
     <div className="flex h-screen bg-gray-200">
-      <div className="flex flex-col w-64 bg-white rounded-r-3xl overflow-hidden">
-        <div className="flex items-center justify-center h-20 shadow-md">
-          <FlagIcon className="h-12 w-12" />
+      <div className="flex flex-col w-64 bg-white overflow-hidden">
+        <div className="flex items-center justify-center h-20 shadow-md text-[42px] font-bold text-gray-900">
+          SHEMS
         </div>
         <nav className="flex-1 px-6 py-4 bg-white overflow-y-auto">
           <Link className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:text-gray-700 ${

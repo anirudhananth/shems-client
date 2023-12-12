@@ -20,6 +20,7 @@ import DeviceResponse from '../model/DeviceResponse';
 * @module api/DeviceControllerApi
 * @version v0
 */
+
 export default class DeviceControllerApi {
 
     /**
