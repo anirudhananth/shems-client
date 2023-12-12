@@ -1,0 +1,13 @@
+.gitignore
+.openapi-generator-ignore
+api.ts
+api/apis.ts
+api/deviceControllerApi.ts
+api/homeControllerApi.ts
+api/userControllerApi.ts
+git_push.sh
+model/deviceResponse.ts
+model/locationResponse.ts
+model/models.ts
+model/userRequest.ts
+model/userResponse.ts
