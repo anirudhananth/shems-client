@@ -14,9 +14,6 @@ import { FormEvent } from 'react'
 async function updateCustomer() {
     try {
         console.log("updateCustomer");
-        // const session = await getSession();
-        // const accessToken = session?.accessToken;
-        // console.log(accessToken);
 
         const externalApiResponse = await fetch(`http://localhost:8080/api/v1/user/register`);
 
@@ -28,7 +25,7 @@ async function updateCustomer() {
         console.log(data);
         return new Response(JSON.stringify(data));
     } catch (err) {
-        console.error("WHAT: ", err);
+        console.error(err);
     }
 }
 

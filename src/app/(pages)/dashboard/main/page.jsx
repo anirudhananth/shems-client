@@ -3,15 +3,43 @@
  * @see https://v0.dev/t/zump6zjeVnu
  */
 'use client'
-
 import Link from "next/link"
 import { CardTitle, CardHeader, CardContent, Card } from "@/components/ui/card"
 import { ResponsiveBar } from "@nivo/bar"
 import { ResponsiveLine } from "@nivo/line"
 import { TableHead, TableRow, TableHeader, TableCell, TableBody, Table } from "@/components/ui/table"
 import { useUser } from '@auth0/nextjs-auth0/client';
+import { useEffect } from 'react';
 
 export default function Component() {
+  const updateCustomer = async (name, email) => {
+    try {
+        const response = await fetch('http://localhost:8080/api/v1/user/register', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+              name: name,
+              email: email
+          }),
+      })
+      
+      // Handle response if necessary
+      const data = await response.json()
+      console.log("Data: ", data);
+    } catch (err) {
+        console.error(err);
+    }
+  };
+  
+  const { user, error, isLoading } = useUser();
+  // const accessToken = session?.accessToken;
+
+  useEffect(() => {
+    updateCustomer(user.name, user.email);
+  }, []);
+
   return (
     <div>
         <div className="mt-10 px-6">
