@@ -3,12 +3,12 @@ export const dynamic = 'force-dynamic'
 import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 import { getSession } from '@auth0/nextjs-auth0';
 
-export async function GET(req, res) {
+export async function callApi() {
     try {
-        const session = getSession(req, res);
+        const session = await getSession();
         const accessToken = session?.accessToken;
+        console.log(accessToken);
 
-        // Make the external API call
         const externalApiResponse = await fetch(`http://localhost:8080/api/v1/device/1/get`, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
@@ -20,9 +20,9 @@ export async function GET(req, res) {
         }
 
         const data = await externalApiResponse.json();
-        res.status(200).json(data);
+        console.log(data);
+        return new Response(JSON.stringify(data));
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Internal Server Error' });
+        console.error("WHAT: ", err);
     }
 };

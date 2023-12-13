@@ -20,7 +20,7 @@ export default function Component({ children }) {
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>{error.message}</div>;
   console.log(user.sid);
-  document.cookie = `accessToken=${user.sub}; path=/;`
+  document.cookie = `accessToken=${user.sid}; path=/;`
 
   return (
     <div className="flex h-screen bg-gray-200">
@@ -29,6 +29,12 @@ export default function Component({ children }) {
           SHEMS
         </div>
         <nav className="flex-1 px-6 py-4 bg-white overflow-y-auto">
+          <Link className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:text-gray-700 ${
+                pathname == "/dashboard/profile" ? 'text-gray-700 rounded-md font-semibold bg-gray-200' : 'text-gray-500'
+              }`} href="/dashboard/profile">
+            <LayoutDashboardIcon className="h-6 w-6" />
+            <span className="mx-4 font-medium">Profile</span>
+          </Link>
           <Link className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:text-gray-700 ${
                 pathname == "/dashboard/main" ? 'text-gray-700 rounded-md font-semibold bg-gray-200' : 'text-gray-500'
               }`} href="/dashboard/main">
