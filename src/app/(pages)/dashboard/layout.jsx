@@ -10,10 +10,17 @@ import { ResponsiveBar } from "@nivo/bar"
 import { ResponsiveLine } from "@nivo/line"
 import { TableHead, TableRow, TableHeader, TableCell, TableBody, Table } from "@/components/ui/table"
 import { usePathname } from 'next/navigation'
+import { useUser } from '@auth0/nextjs-auth0/client';
 
 export default function Component({ children }) {
   const pathname = usePathname();
-  console.log(pathname);
+  
+  const { user, error, isLoading } = useUser();
+  
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>{error.message}</div>;
+  console.log(user.sid);
+  document.cookie = `accessToken=${user.sub}; path=/;`
 
   return (
     <div className="flex h-screen bg-gray-200">
@@ -59,7 +66,9 @@ export default function Component({ children }) {
       </div>
       <main className="flex-1 flex flex-col overflow-hidden">
         <div className="px-6 py-4 bg-white border-b-4 shadow-md">
-          <h2 className="text-2xl font-semibold text-gray-800">Dashboard</h2>
+          <h2 className="text-2xl font-semibold text-gray-800 ml-10">{
+            pathname == "/dashboard/main" ? "Dashboard" : pathname == "/dashboard/devices" ? "Devices" : "Usage"
+          }</h2>
         </div>
         <div className="mt-10 px-6">
             { children }

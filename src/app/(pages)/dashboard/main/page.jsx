@@ -9,12 +9,9 @@ import { CardTitle, CardHeader, CardContent, Card } from "@/components/ui/card"
 import { ResponsiveBar } from "@nivo/bar"
 import { ResponsiveLine } from "@nivo/line"
 import { TableHead, TableRow, TableHeader, TableCell, TableBody, Table } from "@/components/ui/table"
-import { usePathname } from 'next/navigation'
+import { useUser } from '@auth0/nextjs-auth0/client';
 
 export default function Component() {
-  const pathname = usePathname();
-  console.log(pathname);
-
   return (
     <div>
         <div className="mt-10 px-6">

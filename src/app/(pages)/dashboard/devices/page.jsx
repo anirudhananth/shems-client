@@ -1,8 +1,12 @@
-import callApi from '../../../../../server/api/definitions/src/api/test';
+import { callApi } from '@/app/(server)/api/devices/route';
 
 export default function Component() {
-    console.log('Devices page!');
-    callApi().then((response) => {
-    });
-    return <p>Devices page!</p>
+    const callApi = async () => {
+        await fetch('../../api/devices', {
+            method: 'GET'
+        });
+    }
+    callApi();
+    // const res = await callApi();
+    return <button>Devices page!</button>
 }
