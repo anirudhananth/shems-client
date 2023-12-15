@@ -10,6 +10,10 @@ import { Button } from "@/components/ui/button"
 import { useUser } from "@auth0/nextjs-auth0/client"
 import { getSession } from '@auth0/nextjs-auth0';
 import { FormEvent } from 'react'
+import { useState } from 'react'
+import { useEffect } from 'react'
+
+
 
 async function updateCustomer() {
     try {
@@ -30,7 +34,36 @@ async function updateCustomer() {
 }
 
 export default function Component() {
-  let address = "XYZ Street, NY";
+  let name, email, address;
+  let data;
+
+  const getCustomer = async () => {
+    try {
+        const id = localStorage.getItem('customerId');
+        console.log("getCustomer", id);
+
+        const externalApiResponse = await fetch(`http://localhost:8080/api/v1/user/me`, {
+            headers: {
+                'X-User': id,
+            },
+        });
+
+        if (!externalApiResponse.ok) {
+            throw new Error(`HTTP error! status: ${externalApiResponse.status}`);
+        }
+
+        const data = await externalApiResponse.json();
+        console.log(data);
+        return new Response(JSON.stringify(data));
+    } catch (err) {
+        console.error(err);
+    }
+  }
+
+  useEffect(async () => {
+    getCustomer();
+  }, []);
+
 
   async function onSubmit(event) {
     event.preventDefault()
@@ -54,6 +87,11 @@ export default function Component() {
     // ...
   }
   const { user } = useUser();
+
+  const handleNameChange = (event) => {
+    setName(event.target.value);
+  };
+
   return (
     <Card className="mx-auto max-w-md space-y-6 p-6">
       <CardHeader>

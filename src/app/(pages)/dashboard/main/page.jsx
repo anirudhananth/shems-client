@@ -27,6 +27,7 @@ export default function Component() {
       
       // Handle response if necessary
       const data = await response.json()
+      localStorage.setItem('customerId', JSON.stringify(data.id));
       console.log("Data: ", data);
     } catch (err) {
         console.error(err);

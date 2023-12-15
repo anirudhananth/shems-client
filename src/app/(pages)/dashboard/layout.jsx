@@ -9,17 +9,18 @@ import { CardTitle, CardHeader, CardContent, Card } from "@/components/ui/card"
 import { ResponsiveBar } from "@nivo/bar"
 import { ResponsiveLine } from "@nivo/line"
 import { TableHead, TableRow, TableHeader, TableCell, TableBody, Table } from "@/components/ui/table"
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useUser } from '@auth0/nextjs-auth0/client';
 
 export default function Component({ children }) {
+  const router = useRouter();
   const pathname = usePathname();
   
   const { user, error, isLoading } = useUser();
-  
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>{error.message}</div>;
-  console.log(user.sid);
+  if (!user) return router.push('/api/auth/login');
+
   document.cookie = `accessToken=${user.sid}; path=/;`
 
   return (

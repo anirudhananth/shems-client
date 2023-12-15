@@ -8,21 +8,24 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Avatar } from "@/components/ui/avatar"
 import { CardHeader, CardContent, Card } from "@/components/ui/card"
+import { useUser } from '@auth0/nextjs-auth0/client';
 
 export default function Component() {
+  const { user } = useUser();
   
   return (
     <div className="flex flex-col min-h-[100vh] bg-[#ffffff]">
       <header className="px-4 lg:px-6 h-16 flex items-center bg-[#ffffff]">
-        <Link className="flex items-center justify-center" href="#">
+        {/* <Link className="flex items-center justify-center" href="#">
           <FacebookIcon className="h-6 w-6" />
           <span className="sr-only">Company Name</span>
-        </Link>
+        </Link> */}
+        { user && 
         <nav className="ml-auto flex gap-4 sm:gap-6 mr-20">
           <Link className="text-black text-sm font-medium hover:underline underline-offset-4" href="/dashboard/main">
             Dashboard
           </Link>
-        </nav>
+        </nav> }
       </header>
       <main className="flex-1">
         <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-[#f7f7f7]">
