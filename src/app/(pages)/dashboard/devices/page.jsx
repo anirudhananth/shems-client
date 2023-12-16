@@ -34,7 +34,11 @@ export default function Component() {
     const [deletedIds, setDeletedIds] = React.useState([]);
     const [deviceList, setDeviceList] = React.useState([]);
     const [locationIds, setLocationIds] = React.useState('');
-    const [locationList, setLocationList] = React.useState([]);
+    const [locationList, setLocationList] = React.useState([])
+    const [allowedTypes, setAllowedTypes] = React.useState([]);;
+    const [allowedModels, setAllowedModels] = React.useState([]);
+    const [currentType, setCurrentType] = React.useState('');
+    const [currentModel, setCurrentModel] = React.useState([]);
 
     const getLocations = async () => {
         try {
@@ -50,7 +54,7 @@ export default function Component() {
             console.error(err);
         }
     }
-    
+
     useEffect(() => {
         getLocations();
     }, []);
@@ -62,8 +66,25 @@ export default function Component() {
                 method: 'GET',
             })
             const data = await response.json()
-            
+
             setDeviceList(data);
+            return new Response(JSON.stringify(data));
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    const getAllowedTypes = async () => {
+        try {
+            const id = localStorage.getItem('customerId');
+            const response = await fetch(`http://localhost:8080/api/v1/device/allowed`, {
+                method: 'GET',
+            })
+            const data = await response.json()
+            let types = await Object.keys(data);
+            setAllowedTypes(types);
+            setAllowedModels(data);
+            console.log("Um: ", types);
             return new Response(JSON.stringify(data));
         } catch (err) {
             console.error(err);
@@ -72,12 +93,13 @@ export default function Component() {
 
     React.useEffect(() => {
         getDevices();
+        getAllowedTypes();
     }, []);
 
     async function deleteDevices(event) {
         event.preventDefault()
         const formData = new FormData(event.currentTarget)
-        
+
         const deviceIds = [...deletedIds];
         const id = localStorage.getItem('customerId');
         const response = await fetch(`http://${id}.localhost:8080/api/v1/device/delete_multiple`, {
@@ -104,7 +126,7 @@ export default function Component() {
             }
             return true;
         });
-        
+
         setDeviceList(tempDeviceList);
         setDeletedIds(tempIds);
         setCanShow(true);
@@ -130,8 +152,15 @@ export default function Component() {
         let tempDeviceList = [...deviceList];
         tempDeviceList.push(data);
         setDeviceList(tempDeviceList);
-        
     }
+
+    const changeType = (value) => {
+        setCurrentType(value);
+        setCurrentModel(allowedModels[value]);
+        console.log(allowedModels[value])
+    }
+    console.log(currentModel)
+
 
     const [canShow, setCanShow] = React.useState(false)
 
@@ -151,27 +180,38 @@ export default function Component() {
                     <form onSubmit={addDevice}>
                         <div className="grid gap-4 py-4">
                             <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="name" className="text-right">
-                                    Name
-                                </Label>
-                                <Input
-                                    id="type"
-                                    placeholder="Refrigerator"
-                                    className="col-span-3"
-                                    name="type"
-                                />
+                                <Select name="type" onValueChange={(e) => changeType(e)}>
+                                    <Label htmlFor="type" className="text-right">
+                                        Type
+                                    </Label>
+                                    <SelectTrigger className="w-[180px]">
+                                        <SelectValue placeholder="Select location" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {
+                                            allowedTypes.map((type, i) => (
+                                                <SelectItem className="button cursor-pointer" type="button" id={i} value={type}>{type}</SelectItem>
+                                            ))
+                                        }
+                                    </SelectContent>
+                                </Select>
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="model" className="text-right">
-                                    Model
-                                </Label>
-                                <Input
-                                    id="model"
-                                    type="number"
-                                    placeholder="800"
-                                    className="col-span-3"
-                                    name="model"
-                                />
+                                <Select name="model" id="model-name">
+                                    <Label htmlFor="model" className="text-right">
+                                        Model
+                                    </Label>
+                                    <SelectTrigger className="w-[180px]">
+                                        <SelectValue placeholder="Select model" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {
+                                            currentModel.map((type, i) => (
+                                                <SelectItem className="button cursor-pointer" type="button" id={i} value={type}>{type}</SelectItem>
+                                            ))
+                                        }
+                                    </SelectContent>
+                                </Select>
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="Location" className="text-right">
