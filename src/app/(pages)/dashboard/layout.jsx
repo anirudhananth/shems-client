@@ -19,7 +19,7 @@ export default function Component({ children }) {
 
   const router = useRouter();
   const pathname = usePathname();
-  
+
   const { user, error, isLoading } = useUser();
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>{error.message}</div>;
@@ -27,26 +27,26 @@ export default function Component({ children }) {
 
   const updateCustomer = async (name, email) => {
     try {
-        const response = await fetch('http://localhost:8080/api/v1/user/register', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-              name: name,
-              email: email
-          }),
+      const response = await fetch('http://localhost:8080/api/v1/user/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: name,
+          email: email
+        }),
       })
-      
+
       // Handle response if necessary
       const data = await response.json()
       localStorage.setItem('customerId', JSON.stringify(data.id));
-      
+
     } catch (err) {
-        console.error(err);
+      console.error(err);
     }
   };
-  
+
   // const accessToken = session?.accessToken;
 
   useEffect(() => {
@@ -62,56 +62,60 @@ export default function Component({ children }) {
           SHEMS
         </div>
         <nav className="flex-1 px-6 py-4 bg-white overflow-y-auto bg-[#f1f1f1]">
-          <Link className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:rounded-md hover:text-gray-700 ${
-                pathname == "/dashboard/profile" ? 'text-gray-200 rounded-md font-semibold bg-gray-600 hover:text-gray-100 hover:bg-gray-600' : 'text-gray-500'
-              }`} href="/dashboard/profile">
+          <Link className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:rounded-md hover:text-gray-700 ${pathname == "/dashboard/profile" ? 'text-gray-200 rounded-md font-semibold bg-gray-600 hover:text-gray-100 hover:bg-gray-600' : 'text-gray-500'
+            }`} href="/dashboard/profile">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-  <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
-</svg>
-
-
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
             <span className="mx-4 font-medium">Profile</span>
           </Link>
-          <Link className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:rounded-md hover:text-gray-700 ${
-                pathname == "/dashboard/main" ? 'text-gray-200 rounded-md font-semibold bg-gray-600 hover:text-gray-200 hover:bg-gray-600' : 'text-gray-500'
-              }`} href="/dashboard/main">
-            <LayoutDashboardIcon className="h-6 w-6" />
+          <Link className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:rounded-md hover:text-gray-700 ${pathname == "/dashboard/main" ? 'text-gray-200 rounded-md font-semibold bg-gray-600 hover:text-gray-200 hover:bg-gray-600' : 'text-gray-500'
+            }`} href="/dashboard/main">
+            <GroupIcon className="h-6 w-6" />
+
             <span className="mx-4 font-medium">Dashboard</span>
           </Link>
           <Link
-            className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:rounded-md hover:text-gray-700 ${
-                pathname == "/dashboard/devices" ? 'text-gray-200 rounded-md font-semibold bg-gray-600 hover:text-gray-200 hover:bg-gray-600' : 'text-gray-500'
+            className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:rounded-md hover:text-gray-700 ${pathname == "/dashboard/devices" ? 'text-gray-200 rounded-md font-semibold bg-gray-600 hover:text-gray-200 hover:bg-gray-600' : 'text-gray-500'
               }`}
             href="/dashboard/devices"
           >
-            <FolderIcon className="h-6 w-6" />
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+            </svg>
+
             <span className="mx-4 font-medium">Devices</span>
           </Link>
           <Link
-            className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:rounded-md hover:text-gray-700 ${
-                pathname == "/dashboard/locations" ? 'text-gray-200 rounded-md font-semibold bg-gray-600 hover:text-gray-200 hover:bg-gray-600' : 'text-gray-500'
+            className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:rounded-md hover:text-gray-700 ${pathname == "/dashboard/locations" ? 'text-gray-200 rounded-md font-semibold bg-gray-600 hover:text-gray-200 hover:bg-gray-600' : 'text-gray-500'
               }`}
             href="/dashboard/locations"
           >
-            <FolderIcon className="h-6 w-6" />
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+            </svg>
+
             <span className="mx-4 font-medium">Locations</span>
           </Link>
           <Link
-            className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:rounded-md hover:text-gray-700 ${
-                pathname == "/dashboard/usage" ? 'text-gray-200 rounded-md font-semibold bg-gray-600 hover:text-gray-200 hover:bg-gray-600' : 'text-gray-500'
+            className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:rounded-md hover:text-gray-700 ${pathname == "/dashboard/usage" ? 'text-gray-200 rounded-md font-semibold bg-gray-600 hover:text-gray-200 hover:bg-gray-600' : 'text-gray-500'
               }`}
             href="/dashboard/usage"
           >
             <GroupIcon className="h-6 w-6" />
+
             <span className="mx-4 font-medium">Usage</span>
           </Link>
           <Link
-            className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:rounded-md hover:text-gray-700 ${
-                pathname == "" ? 'text-gray-100 rounded-md font-semibold bg-gray-600 hover:text-gray-200 hover:bg-gray-600' : 'text-gray-500'
+            className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:rounded-md hover:text-gray-700 ${pathname == "" ? 'text-gray-100 rounded-md font-semibold bg-gray-600 hover:text-gray-200 hover:bg-gray-600' : 'text-gray-500'
               }`}
             href="/"
           >
-            <CalendarIcon className="h-6 w-6" />
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+            </svg>
+
             <span className="mx-4 font-medium">Log Out</span>
           </Link>
         </nav>
@@ -123,7 +127,7 @@ export default function Component({ children }) {
           }</h2>
         </div>
         <div className="mt-10 px-6">
-            { children }
+          {children}
           {/* <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
