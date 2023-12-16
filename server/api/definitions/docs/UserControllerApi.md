@@ -26,7 +26,7 @@ apiInstance.register(userRequest, (error, data, response) => {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully. Returned data: ' + data);
+    
   }
 });
 ```
@@ -68,7 +68,7 @@ apiInstance.user((error, data, response) => {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully. Returned data: ' + data);
+    
   }
 });
 ```

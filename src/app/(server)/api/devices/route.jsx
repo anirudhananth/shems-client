@@ -7,7 +7,7 @@ export async function callApi() {
     try {
         const session = await getSession();
         const accessToken = session?.accessToken;
-        console.log(accessToken);
+        
 
         const externalApiResponse = await fetch(`http://localhost:8080/api/v1/device/1/get`, {
             headers: {
@@ -20,7 +20,7 @@ export async function callApi() {
         }
 
         const data = await externalApiResponse.json();
-        console.log(data);
+        
         return new Response(JSON.stringify(data));
     } catch (err) {
         console.error("WHAT: ", err);

@@ -6,7 +6,7 @@ const callApi = async () => {
         const appSessionCookie = cookie.get("appSession");
 
         // If the cookie is not found, handle it accordingly
-        console.log(appSessionCookie.value)
+        
         if (!appSessionCookie) {
             console.error("appSession cookie is not set");
             // You might want to handle this situation by throwing an error or returning a default value
@@ -25,7 +25,7 @@ const callApi = async () => {
         }
 
         const data = await res.json(); // Correctly parsing the response as JSON
-        console.log(data);
+        
         return data; // It's a good practice to return the fetched data
     } catch (err) {
         console.error(err);

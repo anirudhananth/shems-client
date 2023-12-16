@@ -12,7 +12,11 @@ import { TableHead, TableRow, TableHeader, TableCell, TableBody, Table } from "@
 import { usePathname, useRouter } from 'next/navigation'
 import { useUser } from '@auth0/nextjs-auth0/client';
 
+import { useEffect } from 'react';
+
 export default function Component({ children }) {
+
+
   const router = useRouter();
   const pathname = usePathname();
   
@@ -21,30 +25,58 @@ export default function Component({ children }) {
   if (error) return <div>{error.message}</div>;
   if (!user) return router.push('/api/auth/login');
 
+  const updateCustomer = async (name, email) => {
+    try {
+        const response = await fetch('http://localhost:8080/api/v1/user/register', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+              name: name,
+              email: email
+          }),
+      })
+      
+      // Handle response if necessary
+      const data = await response.json()
+      localStorage.setItem('customerId', JSON.stringify(data.id));
+      
+    } catch (err) {
+        console.error(err);
+    }
+  };
+  
+  // const accessToken = session?.accessToken;
+
+  useEffect(() => {
+    updateCustomer(user.name, user.email);
+  }, []);
+
   document.cookie = `accessToken=${user.sid}; path=/;`
 
   return (
-    <div className="flex h-screen bg-gray-200">
-      <div className="flex flex-col w-64 bg-white overflow-hidden">
+    <div className="flex h-screen bg-gray-100">
+      <div className="flex flex-col w-64 bg-white overflow-hidden bg-[#f1f1f1]">
         <div className="flex items-center justify-center h-20 shadow-md text-[42px] font-bold text-gray-900">
           SHEMS
         </div>
-        <nav className="flex-1 px-6 py-4 bg-white overflow-y-auto">
-          <Link className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:text-gray-700 ${
-                pathname == "/dashboard/profile" ? 'text-gray-700 rounded-md font-semibold bg-gray-200' : 'text-gray-500'
+        <nav className="flex-1 px-6 py-4 bg-white overflow-y-auto bg-[#f1f1f1]">
+          <Link className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:rounded-md hover:text-gray-700 ${
+                pathname == "/dashboard/profile" ? 'text-gray-200 rounded-md font-semibold bg-gray-600 hover:text-gray-100 hover:bg-gray-600' : 'text-gray-500'
               }`} href="/dashboard/profile">
             <LayoutDashboardIcon className="h-6 w-6" />
             <span className="mx-4 font-medium">Profile</span>
           </Link>
-          <Link className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:text-gray-700 ${
-                pathname == "/dashboard/main" ? 'text-gray-700 rounded-md font-semibold bg-gray-200' : 'text-gray-500'
+          <Link className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:rounded-md hover:text-gray-700 ${
+                pathname == "/dashboard/main" ? 'text-gray-200 rounded-md font-semibold bg-gray-600 hover:text-gray-200 hover:bg-gray-600' : 'text-gray-500'
               }`} href="/dashboard/main">
             <LayoutDashboardIcon className="h-6 w-6" />
             <span className="mx-4 font-medium">Dashboard</span>
           </Link>
           <Link
-            className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:text-gray-700 ${
-                pathname == "/dashboard/devices" ? 'text-gray-700 rounded-md font-semibold bg-gray-200' : 'text-gray-500'
+            className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:rounded-md hover:text-gray-700 ${
+                pathname == "/dashboard/devices" ? 'text-gray-200 rounded-md font-semibold bg-gray-600 hover:text-gray-200 hover:bg-gray-600' : 'text-gray-500'
               }`}
             href="/dashboard/devices"
           >
@@ -52,8 +84,17 @@ export default function Component({ children }) {
             <span className="mx-4 font-medium">Devices</span>
           </Link>
           <Link
-            className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:text-gray-700 ${
-                pathname == "/dashboard/usage" ? 'text-gray-700 rounded-md font-semibold bg-gray-200' : 'text-gray-500'
+            className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:rounded-md hover:text-gray-700 ${
+                pathname == "/dashboard/locations" ? 'text-gray-200 rounded-md font-semibold bg-gray-600 hover:text-gray-200 hover:bg-gray-600' : 'text-gray-500'
+              }`}
+            href="/dashboard/locations"
+          >
+            <FolderIcon className="h-6 w-6" />
+            <span className="mx-4 font-medium">Locations</span>
+          </Link>
+          <Link
+            className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:rounded-md hover:text-gray-700 ${
+                pathname == "/dashboard/usage" ? 'text-gray-200 rounded-md font-semibold bg-gray-600 hover:text-gray-200 hover:bg-gray-600' : 'text-gray-500'
               }`}
             href="/dashboard/usage"
           >
@@ -61,8 +102,8 @@ export default function Component({ children }) {
             <span className="mx-4 font-medium">Usage</span>
           </Link>
           <Link
-            className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:text-gray-700 ${
-                pathname == "" ? 'text-gray-700 rounded-md font-semibold bg-gray-200' : 'text-gray-500'
+            className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:rounded-md hover:text-gray-700 ${
+                pathname == "" ? 'text-gray-100 rounded-md font-semibold bg-gray-600 hover:text-gray-200 hover:bg-gray-600' : 'text-gray-500'
               }`}
             href="/"
           >
@@ -72,9 +113,9 @@ export default function Component({ children }) {
         </nav>
       </div>
       <main className="flex-1 flex flex-col overflow-hidden">
-        <div className="px-6 py-4 bg-white border-b-4 shadow-md">
-          <h2 className="text-2xl font-semibold text-gray-800 ml-10">{
-            pathname == "/dashboard/main" ? "Dashboard" : pathname == "/dashboard/devices" ? "Devices" : "Usage"
+        <div className="px-6 py-4 bg-[#f1f1f1] shadow-md">
+          <h2 className="text-2xl font-semibold text-gray-800 ml-[5%]">{
+            pathname == "/dashboard/main" ? "Dashboard" : pathname == "/dashboard/devices" ? "Devices" : pathname == "/dashboard/profile" ? "Profile" : pathname == "/dashboard/locations" ? "Locations" : "Usage"
           }</h2>
         </div>
         <div className="mt-10 px-6">

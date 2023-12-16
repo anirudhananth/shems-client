@@ -13,39 +13,20 @@ import { FormEvent } from 'react'
 import { useState } from 'react'
 import { useEffect } from 'react'
 
-
-
-async function updateCustomer() {
-    try {
-        console.log("updateCustomer");
-
-        const externalApiResponse = await fetch(`http://localhost:8080/api/v1/user/register`);
-
-        if (!externalApiResponse.ok) {
-            throw new Error(`HTTP error! status: ${externalApiResponse.status}`);
-        }
-
-        const data = await externalApiResponse.json();
-        console.log(data);
-        return new Response(JSON.stringify(data));
-    } catch (err) {
-        console.error(err);
-    }
-}
-
 export default function Component() {
   let name, email, address;
-  let data;
+  let customerData;
 
   const getCustomer = async () => {
     try {
         const id = localStorage.getItem('customerId');
-        console.log("getCustomer", id);
+        
+        let headers = new Headers();
+        headers.append("User", id.toString());
 
-        const externalApiResponse = await fetch(`http://localhost:8080/api/v1/user/me`, {
-            headers: {
-                'X-User': id,
-            },
+        const externalApiResponse = await fetch(`http://${id}.localhost:8080/api/v1/user/me`, {
+            method: 'GET',
+            // headers,
         });
 
         if (!externalApiResponse.ok) {
@@ -53,14 +34,16 @@ export default function Component() {
         }
 
         const data = await externalApiResponse.json();
-        console.log(data);
+        
+        if(!data) return;
+        customerData = data;
         return new Response(JSON.stringify(data));
     } catch (err) {
         console.error(err);
     }
   }
 
-  useEffect(async () => {
+  useEffect(() => {
     getCustomer();
   }, []);
 
@@ -69,7 +52,7 @@ export default function Component() {
     event.preventDefault()
     
     const formData = new FormData(event.currentTarget)
-    console.log(formData.get('name'));
+    
     const response = await fetch('http://localhost:8080/api/v1/user/register', {
         method: 'POST',
         headers: {

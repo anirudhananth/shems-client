@@ -12,34 +12,7 @@ import { useUser } from '@auth0/nextjs-auth0/client';
 import { useEffect } from 'react';
 
 export default function Component() {
-  const updateCustomer = async (name, email) => {
-    try {
-        const response = await fetch('http://localhost:8080/api/v1/user/register', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-              name: name,
-              email: email
-          }),
-      })
-      
-      // Handle response if necessary
-      const data = await response.json()
-      localStorage.setItem('customerId', JSON.stringify(data.id));
-      console.log("Data: ", data);
-    } catch (err) {
-        console.error(err);
-    }
-  };
   
-  const { user, error, isLoading } = useUser();
-  // const accessToken = session?.accessToken;
-
-  useEffect(() => {
-    updateCustomer(user.name, user.email);
-  }, []);
 
   return (
     <div>
