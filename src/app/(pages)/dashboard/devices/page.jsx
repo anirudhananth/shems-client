@@ -97,61 +97,73 @@ export default function Component() {
     }, []);
 
     async function deleteDevices(event) {
-        event.preventDefault()
-        const formData = new FormData(event.currentTarget)
-
-        const deviceIds = [...deletedIds];
-        const id = localStorage.getItem('customerId');
-        const response = await fetch(`http://${id}.localhost:8080/api/v1/device/delete_multiple`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                deviceIds: deviceIds,
+        try {
+            event.preventDefault()
+            const formData = new FormData(event.currentTarget)
+    
+            const deviceIds = [...deletedIds];
+            const id = localStorage.getItem('customerId');
+            const response = await fetch(`http://${id}.localhost:8080/api/v1/device/delete_multiple`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    deviceIds: deviceIds,
+                })
             })
-        })
-        const data = await response.json()
+            const data = await response.json()
+        } catch (err) {
+            console.error(err);
+        }
     }
 
 
     async function deleteDevice(event) {
-        event.preventDefault()
-        const formData = new FormData(event.currentTarget)
-        let tempIds = [...deletedIds];
-        let tempDeviceList = deviceList.filter(d => {
-            if (d.id == formData.get('id')) {
-                tempIds.push(d.id);
-                return false;
-            }
-            return true;
-        });
-
-        setDeviceList(tempDeviceList);
-        setDeletedIds(tempIds);
-        setCanShow(true);
+        try {
+            event.preventDefault()
+            const formData = new FormData(event.currentTarget)
+            let tempIds = [...deletedIds];
+            let tempDeviceList = deviceList.filter(d => {
+                if (d.id == formData.get('id')) {
+                    tempIds.push(d.id);
+                    return false;
+                }
+                return true;
+            });
+    
+            setDeviceList(tempDeviceList);
+            setDeletedIds(tempIds);
+            setCanShow(true);
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     async function addDevice(event) {
-        event.preventDefault()
-        const id = localStorage.getItem('customerId');
-
-        const formData = new FormData(event.currentTarget)
-        const response = await fetch(`http://${id}.localhost:8080/api/v1/device/add`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                type: formData.get('type'),
-                modelNumber: formData.get('model'),
-                locationId: formData.get('location'),
+        try {
+            event.preventDefault()
+            const id = localStorage.getItem('customerId');
+    
+            const formData = new FormData(event.currentTarget)
+            const response = await fetch(`http://${id}.localhost:8080/api/v1/device/add`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    type: formData.get('type'),
+                    modelNumber: formData.get('model'),
+                    locationId: formData.get('location'),
+                })
             })
-        })
-        const data = await response.json()
-        let tempDeviceList = [...deviceList];
-        tempDeviceList.push(data);
-        setDeviceList(tempDeviceList);
+            const data = await response.json()
+            let tempDeviceList = [...deviceList];
+            tempDeviceList.push(data);
+            setDeviceList(tempDeviceList);
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     const changeType = (value) => {
