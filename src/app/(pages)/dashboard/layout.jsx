@@ -62,21 +62,21 @@ export default function Component({ children }) {
           SHEMS
         </div>
         <nav className="flex-1 px-6 py-4 bg-white overflow-y-auto bg-[#f1f1f1]">
-          <Link className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:rounded-md hover:text-gray-700 ${pathname == "/dashboard/profile" ? 'text-[#d9d9d9] rounded-md font-semibold bg-gray-600 hover:text-[#d9d9d9] hover:bg-gray-600' : 'text-gray-500'
+          <Link className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:rounded-md hover:text-gray-700 ${pathname == "/dashboard/profile" ? 'text-white rounded-md font-semibold bg-gray-600 hover:text-white hover:bg-gray-600' : 'text-gray-500'
             }`} href="/dashboard/profile">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
               <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
             <span className="mx-4 font-medium">Profile</span>
           </Link>
-          <Link className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:rounded-md hover:text-gray-700 ${pathname == "/dashboard/main" ? 'text-[#d9d9d9] rounded-md font-semibold bg-gray-600 hover:text-[#d9d9d9] hover:bg-gray-600' : 'text-gray-500'
+          <Link className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:rounded-md hover:text-gray-700 ${pathname == "/dashboard/main" ? 'text-white rounded-md font-semibold bg-gray-600 hover:text-white hover:bg-gray-600' : 'text-gray-500'
             }`} href="/dashboard/main">
             <GroupIcon className="h-6 w-6" />
 
             <span className="mx-4 font-medium">Dashboard</span>
           </Link>
           <Link
-            className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:rounded-md hover:text-gray-700 ${pathname == "/dashboard/devices" ? 'text-[#d9d9d9] rounded-md font-semibold bg-gray-600 hover:text-[#d9d9d9] hover:bg-gray-600' : 'text-gray-500'
+            className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:rounded-md hover:text-gray-700 ${pathname == "/dashboard/devices" ? 'text-white rounded-md font-semibold bg-gray-600 hover:text-white hover:bg-gray-600' : 'text-gray-500'
               }`}
             href="/dashboard/devices"
           >
@@ -87,7 +87,7 @@ export default function Component({ children }) {
             <span className="mx-4 font-medium">Devices</span>
           </Link>
           <Link
-            className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:rounded-md hover:text-gray-700 ${pathname == "/dashboard/locations" ? 'text-[#d9d9d9] rounded-md font-semibold bg-gray-600 hover:text-[#d9d9d9] hover:bg-gray-600' : 'text-gray-500'
+            className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:rounded-md hover:text-gray-700 ${pathname == "/dashboard/locations" ? 'text-white rounded-md font-semibold bg-gray-600 hover:text-white hover:bg-gray-600' : 'text-gray-500'
               }`}
             href="/dashboard/locations"
           >
@@ -99,7 +99,7 @@ export default function Component({ children }) {
             <span className="mx-4 font-medium">Locations</span>
           </Link>
           <Link
-            className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:rounded-md hover:text-gray-700 ${pathname == "/dashboard/usage" ? 'text-[#d9d9d9] rounded-md font-semibold bg-gray-600 hover:text-[#d9d9d9] hover:bg-gray-600' : 'text-gray-500'
+            className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:rounded-md hover:text-gray-700 ${pathname == "/dashboard/usage" ? 'text-white rounded-md font-semibold bg-gray-600 hover:text-white hover:bg-gray-600' : 'text-gray-500'
               }`}
             href="/dashboard/usage"
           >
