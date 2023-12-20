@@ -9,9 +9,22 @@ import { Button } from "@/components/ui/button"
 import { Avatar } from "@/components/ui/avatar"
 import { CardHeader, CardContent, Card } from "@/components/ui/card"
 import { useUser } from '@auth0/nextjs-auth0/client';
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
 
 export default function Component() {
-  const { user } = useUser();
+  const { user, error, isLoading } = useUser();
+  const router = useRouter();
+
+  // [user, setUser] = useState(user);
+  useEffect(() => {
+    if(user) {
+      router.push('/dashboard/main');
+    }
+  }, [user, router]);
+  
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>{error.message}</div>;
   
   return (
     <div className="flex flex-col min-h-[100vh] bg-[#ffffff]">
@@ -39,11 +52,13 @@ export default function Component() {
                   A platform designed for you. Accessible. Customizable. Open Source.
                 </p>
               </div>
-              <div className="space-x-4">
-                <Button className="inline-flex h-9 items-center justify-center rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-gray-50 shadow transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300">
-                  <Link href="/api/auth/login">Log In</Link>
-                </Button>
-              </div>
+              { user &&
+                <div className="space-x-4">
+                  <Button className="inline-flex h-9 items-center justify-center rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-gray-50 shadow transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300">
+                    <Link href="/api/auth/login">Log In</Link>
+                  </Button>
+                </div>
+              }
             </div>
           </div>
         </section>
@@ -52,7 +67,7 @@ export default function Component() {
   )
 }
 
-function FacebookIcon(props) {
+function FacebookIcon(props = {}) {
   return (
     <svg
       {...props}
@@ -72,7 +87,7 @@ function FacebookIcon(props) {
 }
 
 
-function InstagramIcon(props) {
+function InstagramIcon(props = {}) {
   return (
     <svg
       {...props}
@@ -94,7 +109,7 @@ function InstagramIcon(props) {
 }
 
 
-function TwitterIcon(props) {
+function TwitterIcon(props = {}) {
   return (
     <svg
       {...props}

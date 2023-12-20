@@ -56,12 +56,12 @@ export default function Component({ children }) {
   document.cookie = `accessToken=${user.sid}; path=/;`
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen">
       <div className="flex flex-col w-64 bg-white overflow-hidden bg-[#f1f1f1]">
-        <div className="flex items-center justify-center h-20 shadow-md text-[42px] font-bold text-gray-900">
+        <div className="flex items-center justify-center h-20 shadow-md text-[42px] font-bold text-gray-700 border-r-4">
           SHEMS
         </div>
-        <nav className="flex-1 px-6 py-4 bg-white overflow-y-auto bg-[#f1f1f1]">
+        <nav className="flex-1 px-6 py-4 bg-white overflow-y-auto bg-[#f1f1f1] border-r-4">
           <Link className={`flex items-center mt-2 py-2 px-6 text-gray-500 hover:bg-gray-200 hover:rounded-md hover:text-gray-700 ${pathname == "/dashboard/profile" ? 'text-white rounded-md font-semibold bg-gray-600 hover:text-white hover:bg-gray-600' : 'text-gray-500'
             }`} href="/dashboard/profile">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -120,9 +120,9 @@ export default function Component({ children }) {
           </Link>
         </nav>
       </div>
-      <main className="flex-1 flex flex-col overflow-hidden">
-        <div className="px-6 py-4 bg-[#f1f1f1] shadow-md">
-          <h2 className="text-2xl font-semibold text-gray-800 ml-[5%]">{
+      <main className="flex-1 flex flex-col overflow-hidden bg-gray-100">
+        <div className="px-6 py-4 border-b-4 w-[80%] ml-[10%]">
+          <h2 className="text-2xl font-semibold text-gray-700 ml-[5%] mt-2">{
             pathname == "/dashboard/main" ? "Dashboard" : pathname == "/dashboard/devices" ? "Devices" : pathname == "/dashboard/profile" ? "Profile" : pathname == "/dashboard/locations" ? "Locations" : "Usage"
           }</h2>
         </div>
