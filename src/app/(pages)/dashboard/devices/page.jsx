@@ -247,7 +247,7 @@ export default function Component() {
                     </form>
                 </DialogContent>
             </Dialog>
-            <div className="w-full my-8 ml-[5%] mr-[5%] overflow-auto">
+            <div className="w-[90%] h-[32rem] my-8 ml-[5%] mr-[5%] overflow-y-scroll bg-scroll">
                 <Table className="min-w-full">
                     <TableHeader>
                         <TableRow>
@@ -281,7 +281,7 @@ export default function Component() {
             {!canShow &&
                 <Dialog>
                     <DialogTrigger asChild>
-                        <Button className="text-gray-800 bg-gray-200 hover:text-gray-100 hover:bg-gray-600 ml-[80%]" size="lg">
+                        <Button className="text-gray-800 bg-gray-200 hover:text-gray-100 hover:bg-gray-600 ml-[88%]" size="lg">
                             Save
                         </Button>
                     </DialogTrigger>
