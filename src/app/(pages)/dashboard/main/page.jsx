@@ -57,7 +57,6 @@ export default function Component() {
       }
 
       const data = await externalApiResponse.json();
-      console.log("Average Consumption: ", data);
       setAverageConsumption(round(data.total, 1));
       setAverageConsumptionDelta(round(data.percentageDelta, 1));
 
@@ -188,7 +187,7 @@ export default function Component() {
           </Card>
           <Card className="bg-white">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-              <CardTitle className="text-sm font-medium">Average Consumption</CardTitle>
+              <CardTitle className="text-sm font-medium">Average Consumption per Device</CardTitle>
               <UsersIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
             </CardHeader>
             <CardContent>

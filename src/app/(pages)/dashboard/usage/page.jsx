@@ -123,7 +123,7 @@ export default function Component() {
 
         const location = formData.get('location');
         const id = localStorage.getItem('customerId');
-        const response = await fetch(`http://${id}.localhost:8080/api/v1/location${location == '0' ? "" : location}/consumption_interval?interval=${time}`, {
+        const response = await fetch(`http://${id}.localhost:8080/api/v1/location${location == '0' ? "" : '/' + location}/consumption_interval?interval=${time}`, {
             method: 'GET',
         })
         const data = await response.json()
@@ -147,8 +147,9 @@ export default function Component() {
             });
         });
         addressMap = Array.from(addressMap.values());
-        setDisplayData(addressMap);
-        setHasData(true);
+        console.log(addressMap);
+        // setDisplayData(addressMap);
+        // setHasData(true);
         return new Response(JSON.stringify(data));
     }
 

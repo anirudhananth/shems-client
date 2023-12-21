@@ -270,7 +270,7 @@ export default function Component() {
             {canShow &&
                 <Dialog>
                     <DialogTrigger asChild>
-                        <Button className="text-gray-800 bg-gray-200 hover:text-gray-100 hover:bg-gray-600 ml-[88%]" size="lg">
+                        <Button className="text-gray-800 bg-gray-200 hover:text-gray-100 hover:bg-gray-600 ml-[79%]" size="lg">
                             Save
                         </Button>
                     </DialogTrigger>
