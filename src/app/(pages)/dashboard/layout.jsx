@@ -56,7 +56,7 @@ export default function Component({ children }) {
   document.cookie = `accessToken=${user.sid}; path=/;`
 
   return (
-    <div className="flex h-screen">
+    <div className="flex overflow-auto">
       <div className="flex flex-col w-64 bg-white overflow-hidden bg-[#f1f1f1]">
         <div className="flex items-center justify-center h-20 shadow-md text-[42px] font-bold text-gray-700 border-r-4">
           SHEMS

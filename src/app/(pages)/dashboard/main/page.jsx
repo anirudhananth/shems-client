@@ -9,128 +9,160 @@ import { ResponsiveBar } from "@nivo/bar"
 import { ResponsiveLine } from "@nivo/line"
 import { TableHead, TableRow, TableHeader, TableCell, TableBody, Table } from "@/components/ui/table"
 import { useUser } from '@auth0/nextjs-auth0/client';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { ResponsivePie } from '@nivo/pie'
 
 export default function Component() {
-  
+  const [locationConsumptions, setLocationConsumptions] = useState([]);
+
+  const getLocationConsumption = async () => {
+    try {
+      const id = localStorage.getItem('customerId');
+      const externalApiResponse = await fetch(`http://${id}.localhost:8080/api/v1/location/consumption`, {
+        method: 'GET',
+      });
+
+      if (!externalApiResponse.ok) {
+        throw new Error(`HTTP error! status: ${externalApiResponse.status}`);
+      }
+
+      let data = await externalApiResponse.json();
+      data = data.map(d => {
+        return {
+          id: d.address,
+          value: Math.floor(d.total)
+        }
+      })
+      setLocationConsumptions(data);
+      return new Response(JSON.stringify(data));
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  useEffect(() => {
+    getLocationConsumption();
+  }, []);
 
   return (
     <div>
-        <div className="mt-10 px-6">
-          <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-                <DollarSignIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">$45,231.89</div>
-                <p className="text-xs text-gray-500 dark:text-gray-400">+20.1% from last month</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                <CardTitle className="text-sm font-medium">Active Users</CardTitle>
-                <UsersIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">+2350</div>
-                <p className="text-xs text-gray-500 dark:text-gray-400">+18% from last month</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                <CardTitle className="text-sm font-medium">Page Views</CardTitle>
-                <ViewIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">+150k</div>
-                <p className="text-xs text-gray-500 dark:text-gray-400">+25.5% from last month</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                <CardTitle className="text-sm font-medium">New Customers</CardTitle>
-                <UsersIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">+573</div>
-                <p className="text-xs text-gray-500 dark:text-gray-400">+22.1% from last month</p>
-              </CardContent>
-            </Card>
-          </div>
-          <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-2">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                <CardTitle className="text-sm font-medium">Revenue Chart</CardTitle>
-                <BarChartIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-              </CardHeader>
-              <CardContent>
-                <BarChart className="w-full h-[300px]" />
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                <CardTitle className="text-sm font-medium">User Statistics</CardTitle>
-                <BarChartIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-              </CardHeader>
-              <CardContent>
-                <CurvedlineChart className="w-full h-[300px]" />
-              </CardContent>
-            </Card>
-          </div>
+      <div className="mt-10 px-6 h-auto overflow-auto">
+        <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
           <Card>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[100px]">Invoice</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Method</TableHead>
-                  <TableHead className="text-right">Amount</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                <TableRow>
-                  <TableCell className="font-medium">INV001</TableCell>
-                  <TableCell>Paid</TableCell>
-                  <TableCell>$250.00</TableCell>
-                  <TableCell className="text-right">Credit Card</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-medium">INV002</TableCell>
-                  <TableCell>Pending</TableCell>
-                  <TableCell>$150.00</TableCell>
-                  <TableCell className="text-right">PayPal</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-medium">INV003</TableCell>
-                  <TableCell>Unpaid</TableCell>
-                  <TableCell>$350.00</TableCell>
-                  <TableCell className="text-right">Bank Transfer</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-medium">INV004</TableCell>
-                  <TableCell>Paid</TableCell>
-                  <TableCell>$450.00</TableCell>
-                  <TableCell className="text-right">Credit Card</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-medium">INV005</TableCell>
-                  <TableCell>Paid</TableCell>
-                  <TableCell>$550.00</TableCell>
-                  <TableCell className="text-right">PayPal</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+              <DollarSignIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">$45,231.89</div>
+              <p className="text-xs text-gray-500 dark:text-gray-400">+20.1% from last month</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardTitle className="text-sm font-medium">Active Users</CardTitle>
+              <UsersIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">+2350</div>
+              <p className="text-xs text-gray-500 dark:text-gray-400">+18% from last month</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardTitle className="text-sm font-medium">Page Views</CardTitle>
+              <ViewIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">+150k</div>
+              <p className="text-xs text-gray-500 dark:text-gray-400">+25.5% from last month</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardTitle className="text-sm font-medium">New Customers</CardTitle>
+              <UsersIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">+573</div>
+              <p className="text-xs text-gray-500 dark:text-gray-400">+22.1% from last month</p>
+            </CardContent>
           </Card>
         </div>
+        <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-2">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardTitle className="text-sm font-medium">Revenue Chart</CardTitle>
+              <BarChartIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+            </CardHeader>
+            <CardContent>
+              <BarChart className="w-full h-[400px]"/>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardTitle className="text-sm font-medium">User Statistics (in kWh)</CardTitle>
+              <BarChartIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+            </CardHeader>
+            <CardContent className="overflow-auto">
+              <MyResponsivePie className="container w-full h-[400px] overflow-y-scroll" data={locationConsumptions}/>
+            </CardContent>
+          </Card>
+        </div>
+        <Card>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[100px]">Invoice</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Method</TableHead>
+                <TableHead className="text-right">Amount</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell className="font-medium">INV001</TableCell>
+                <TableCell>Paid</TableCell>
+                <TableCell>$250.00</TableCell>
+                <TableCell className="text-right">Credit Card</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell className="font-medium">INV002</TableCell>
+                <TableCell>Pending</TableCell>
+                <TableCell>$150.00</TableCell>
+                <TableCell className="text-right">PayPal</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell className="font-medium">INV003</TableCell>
+                <TableCell>Unpaid</TableCell>
+                <TableCell>$350.00</TableCell>
+                <TableCell className="text-right">Bank Transfer</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell className="font-medium">INV004</TableCell>
+                <TableCell>Paid</TableCell>
+                <TableCell>$450.00</TableCell>
+                <TableCell className="text-right">Credit Card</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell className="font-medium">INV005</TableCell>
+                <TableCell>Paid</TableCell>
+                <TableCell>$550.00</TableCell>
+                <TableCell className="text-right">PayPal</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </Card>
+      </div>
     </div>
   )
 }
 
 function BarChart(props) {
+  const className = props.className;
+  console.log("Class: ", props.x);
   return (
-    <div {...props}>
+    <div className={className}>
       <ResponsiveBar
         data={[
           {
@@ -259,6 +291,165 @@ function CalendarIcon(props) {
   )
 }
 
+function MyResponsivePie(data /* see data tab */) {
+  return (
+    <div className={data.className + "!overflow-auto"}>
+      <ResponsivePie
+        data={data.data}
+        margin={{ top: 60, right: 80, bottom: 60, left: -200 }}
+        innerRadius={0.5}
+        padAngle={0.7}
+        cornerRadius={3}
+        activeOuterRadiusOffset={8}
+        borderWidth={1}
+        borderColor={{
+          from: 'color',
+          modifiers: [
+            [
+              'darker',
+              0.2
+            ]
+          ]
+        }}
+        enableArcLinkLabels={false}
+        arcLinkLabelsSkipAngle={10}
+        arcLinkLabelsTextColor="#333333"
+        arcLinkLabelsThickness={2}
+        arcLinkLabelsColor={{ from: 'color' }}
+        arcLabelsSkipAngle={10}
+        arcLabelsTextColor={{
+          from: 'color',
+          modifiers: [
+            [
+              'darker',
+              2
+            ]
+          ]
+        }}
+        defs={[
+          {
+            id: 'dots',
+            type: 'patternDots',
+            background: 'inherit',
+            color: 'rgba(255, 255, 255, 0.3)',
+            size: 4,
+            padding: 1,
+            stagger: true
+          },
+          {
+            id: 'lines',
+            type: 'patternLines',
+            background: 'inherit',
+            color: 'rgba(255, 255, 255, 0.3)',
+            rotation: -45,
+            lineWidth: 6,
+            spacing: 10
+          }
+        ]}
+        // fill={[
+        //     {
+        //         match: {
+        //             id: 'ruby'
+        //         },
+        //         id: 'dots'
+        //     },
+        //     {
+        //         match: {
+        //             id: 'c'
+        //         },
+        //         id: 'dots'
+        //     },
+        //     {
+        //         match: {
+        //             id: 'go'
+        //         },
+        //         id: 'dots'
+        //     },
+        //     {
+        //         match: {
+        //             id: 'python'
+        //         },
+        //         id: 'dots'
+        //     },
+        //     {
+        //         match: {
+        //             id: 'scala'
+        //         },
+        //         id: 'lines'
+        //     },
+        //     {
+        //         match: {
+        //             id: 'lisp'
+        //         },
+        //         id: 'lines'
+        //     },
+        //     {
+        //         match: {
+        //             id: 'elixir'
+        //         },
+        //         id: 'lines'
+        //     },
+        //     {
+        //         match: {
+        //             id: 'javascript'
+        //         },
+        //         id: 'lines'
+        //     }
+        // ]}
+        legends={[
+          {
+            anchor: 'bottom',
+            direction: 'column',
+            justify: false,
+            translateX: 250,
+            translateY: -220,
+            itemsSpacing: 0,
+            itemWidth: 100,
+            itemHeight: 28,
+            itemTextColor: 'rgb(75 85 99)',
+            itemDirection: 'left-to-right',
+            itemOpacity: 1,
+            symbolSize: 18,
+            symbolShape: 'circle',
+            effects: [
+              {
+                on: 'hover',
+                style: {
+                  itemTextColor: '#000'
+                }
+              }
+            ]
+          }
+        ]}
+      />
+    </div>
+  );
+
+
+  // <ResponsivePie
+  //     data={[{
+  //       "id": "javascript",
+  //       "value": 355,
+  //     },
+  //     {
+  //       "id": "ruby",
+  //       "value": 150,
+  //     }]}
+  //     margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
+  //     innerRadius={0.5}
+  //     padAngle={0.7}
+  //     cornerRadius={3}
+  //     colors={{ scheme: 'nivo' }}
+  //     borderWidth={1}
+  //     borderColor={{ from: 'color', modifiers: [['darker', 0.2]] }}
+  //     enableRadialLabels={false}
+  //     sliceLabel={({ datum }) => `${datum.id}: ${datum.value}`}
+  //     enableSlicesLabels={true}
+  //     slicesLabelsTextColor="#333333"
+  // />
+
+
+}
 
 function CurvedlineChart(props) {
   return (

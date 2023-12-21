@@ -100,7 +100,7 @@ export default function Component() {
         try {
             event.preventDefault()
             const formData = new FormData(event.currentTarget)
-    
+
             const deviceIds = [...deletedIds];
             const id = localStorage.getItem('customerId');
             const response = await fetch(`http://${id}.localhost:8080/api/v1/device/delete_multiple`, {
@@ -131,7 +131,7 @@ export default function Component() {
                 }
                 return true;
             });
-    
+
             setDeviceList(tempDeviceList);
             setDeletedIds(tempIds);
             setCanShow(true);
@@ -144,7 +144,7 @@ export default function Component() {
         try {
             event.preventDefault()
             const id = localStorage.getItem('customerId');
-    
+
             const formData = new FormData(event.currentTarget)
             const response = await fetch(`http://${id}.localhost:8080/api/v1/device/add`, {
                 method: 'POST',
@@ -171,89 +171,124 @@ export default function Component() {
         setCurrentModel(allowedModels[value]);
         console.log(allowedModels[value])
     }
-    console.log(currentModel)
 
+    const alterDeviceList = async (value) => {
+        try {
+            const id = localStorage.getItem('customerId');
+            if(value == 0) {
+                getDevices();
+                return;
+            }
+            const response = await fetch(`http://${id}.localhost:8080/api/v1/device/${value}/get`, {
+                method: 'GET',
+            })
+            const data = await response.json()
+
+            setDeviceList(data);
+            return new Response(JSON.stringify(data));
+        } catch (err) {
+            console.error(err);
+        }
+    }
 
     const [canShow, setCanShow] = React.useState(false)
 
     return (
-        <div className="w-full">
-            <Dialog>
-                <DialogTrigger asChild className="ml-[5%]">
-                    <Button size="lg" className="text-gray-800 bg-gray-200 border border-none hover:bg-gray-600 hover:text-gray-100">Add Device</Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                        <DialogTitle>Add a new device</DialogTitle>
-                        <DialogDescription>
-                            Enter the details of the device you want to add.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <form onSubmit={addDevice}>
-                        <div className="grid gap-4 py-4">
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Select name="type" onValueChange={(e) => changeType(e)}>
-                                    <Label htmlFor="type" className="text-right">
-                                        Type
+        <div className="w-full ml-[9%]">
+            <div className="flex flex-row justify-between">
+                <Dialog>
+                    <DialogTrigger asChild className="ml-[5%]">
+                        <Button size="lg" className="text-gray-800 bg-gray-200 border border-none hover:bg-gray-600 hover:text-gray-100">Add Device</Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                            <DialogTitle>Add a new device</DialogTitle>
+                            <DialogDescription>
+                                Enter the details of the device you want to add.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <form onSubmit={addDevice}>
+                            <div className="grid gap-4 py-4">
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Select name="type" onValueChange={(e) => changeType(e)}>
+                                        <Label htmlFor="type" className="text-right">
+                                            Type
+                                        </Label>
+                                        <SelectTrigger className="w-[180px]">
+                                            <SelectValue placeholder="Select type" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {
+                                                allowedTypes.map((type, i) => (
+                                                    <SelectItem className="button cursor-pointer" type="button" id={i} value={type}>{type}</SelectItem>
+                                                ))
+                                            }
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Select name="model" id="model-name">
+                                        <Label htmlFor="model" className="text-right">
+                                            Model
+                                        </Label>
+                                        <SelectTrigger className="w-[180px]">
+                                            <SelectValue placeholder="Select model" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {
+                                                currentModel.map((type, i) => (
+                                                    <SelectItem className="button cursor-pointer" type="button" id={i} value={type}>{type}</SelectItem>
+                                                ))
+                                            }
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label htmlFor="Location" className="text-right">
+                                        Location
                                     </Label>
-                                    <SelectTrigger className="w-[180px]">
-                                        <SelectValue placeholder="Select location" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {
-                                            allowedTypes.map((type, i) => (
-                                                <SelectItem className="button cursor-pointer" type="button" id={i} value={type}>{type}</SelectItem>
-                                            ))
-                                        }
-                                    </SelectContent>
-                                </Select>
+                                    <Select name="location">
+                                        <SelectTrigger className="w-[180px]">
+                                            <SelectValue placeholder="Select location" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {locationList.map((location, i) => (
+                                                <SelectItem id={i} value={location.id.toString()}>{location.address}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
                             </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Select name="model" id="model-name">
-                                    <Label htmlFor="model" className="text-right">
-                                        Model
-                                    </Label>
-                                    <SelectTrigger className="w-[180px]">
-                                        <SelectValue placeholder="Select model" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {
-                                            currentModel.map((type, i) => (
-                                                <SelectItem className="button cursor-pointer" type="button" id={i} value={type}>{type}</SelectItem>
-                                            ))
-                                        }
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="Location" className="text-right">
-                                    Location
-                                </Label>
-                                <Select name="location">
-                                    <SelectTrigger className="w-[180px]">
-                                        <SelectValue placeholder="Select location" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {locationList.map((location, i) => (
-                                            <SelectItem id={i} value={location.id.toString()}>{location.address}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                        </div>
-                        <DialogClose asChild className="text-end ml-[76%]">
-                            <Button type="submit" className="bg-gray-400 hover:bg-gray-700 rounded-md" size="lg">Add</Button>
-                        </DialogClose>
-                    </form>
-                </DialogContent>
-            </Dialog>
+                            <DialogClose asChild className="text-end ml-[76%]">
+                                <Button type="submit" className="bg-gray-400 hover:bg-gray-700 rounded-md" size="lg">Add</Button>
+                            </DialogClose>
+                        </form>
+                    </DialogContent>
+                </Dialog>
+                <div className="grid grid-cols-2 items-center gap-4 mr-[23%]">
+                    <Label htmlFor="Location" className="text-right">
+                        {/* Filter by Location */}
+                    </Label>
+                    <Select name="location" onValueChange={(e) => alterDeviceList(e)}>
+                        <SelectTrigger className="w-[180px] bg-gray-600 text-white">
+                            <SelectValue placeholder="Select Location" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem id={0} value="0">All Locations</SelectItem>
+                            {locationList.map((location, i) => (
+                                <SelectItem id={i + 1} value={location.id.toString()}>{location.address}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+            </div>
             <div className="w-[90%] h-[32rem] my-8 ml-[5%] mr-[5%] overflow-y-scroll bg-scroll">
                 <Table className="min-w-full">
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="w-1/4 font-bold">Type</TableHead>
-                            <TableHead className="w-1/4 font-bold">Model</TableHead>
-                            <TableHead className="w-1/4 font-bold">Address</TableHead>
+                            <TableHead className="w-1/4 font-bold text-gray-600">Type</TableHead>
+                            <TableHead className="w-1/4 font-bold text-gray-600">Model</TableHead>
+                            <TableHead className="w-1/4 font-bold text-gray-600">Address</TableHead>
                             <TableHead className="w-1/4 font-bold"></TableHead>
                         </TableRow>
                     </TableHeader>
@@ -281,7 +316,7 @@ export default function Component() {
             {!canShow &&
                 <Dialog>
                     <DialogTrigger asChild>
-                        <Button className="text-gray-800 bg-gray-200 hover:text-gray-100 hover:bg-gray-600 ml-[88%]" size="lg">
+                        <Button className="text-gray-800 bg-gray-200 hover:text-gray-100 hover:bg-gray-600 ml-[70%]" size="lg">
                             Save
                         </Button>
                     </DialogTrigger>

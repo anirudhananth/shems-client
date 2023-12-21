@@ -117,7 +117,7 @@ export default function Component() {
     return (
         <div className="w-full">
             <Dialog>
-                <DialogTrigger asChild className="ml-[5%]">
+                <DialogTrigger asChild className="ml-[14%]">
                     <Button size="lg" className="text-gray-800 bg-gray-200 border border-none hover:bg-gray-600 hover:text-gray-100">
                         Add Location
                     </Button>
@@ -235,7 +235,7 @@ export default function Component() {
             {!canShow &&
                 <Dialog>
                     <DialogTrigger asChild className="text-end">
-                        <Button className="text-gray-800 bg-gray-200 hover:text-gray-100 hover:bg-gray-600 ml-[88%]" size="lg">
+                        <Button className="text-gray-800 bg-gray-200 hover:text-gray-100 hover:bg-gray-600 ml-[79%]" size="lg">
                             Save
                         </Button>
                     </DialogTrigger>
