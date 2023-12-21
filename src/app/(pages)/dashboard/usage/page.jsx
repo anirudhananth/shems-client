@@ -35,10 +35,16 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { select } from "@nextui-org/react"
 
 export default function Component() {
     const [deletedIds, setDeletedIds] = useState([]);
     const [locationList, setLocationsList] = useState([])
+    const [selectedLocation, setSelectedLocation] = useState(null);
+    const [selectedDevice, setSelectedDevice] = useState(null);
+    const [selectedDuration, setSelectedDuration] = useState(null);
+    const [displayData, setDisplayData] = useState(null);
+    const [hasData, setHasData] = useState(false);
 
     const getLocations = async () => {
         try {
@@ -55,38 +61,133 @@ export default function Component() {
         }
     }
 
+    const lastWeekData = async () => {
+        try {
+            const id = localStorage.getItem('customerId');
+            const response = await fetch(`http://${id}.localhost:8080/api/v1/location/consumption_interval?interval=week`, {
+                method: 'GET',
+            })
+            const data = await response.json()
+
+            let addressMap = new Map();
+            data.forEach((d) => {
+                // if(addressMap.has(d.address)) {
+                //     addressMap.set(d.address, addressMap.get(d.address) + 1);
+                //     return;
+                // }
+                addressMap.set(d.address, {
+                    id: d.address,
+                    data: []
+                });
+            });
+
+            data.forEach((d) => {
+                addressMap.get(d.address).data.push({
+                    x: d.timeUnit,
+                    y: d.total,
+                });
+            });
+            addressMap = Array.from(addressMap.values());
+            setDisplayData(addressMap);
+            setHasData(true);
+            return new Response(JSON.stringify(data));
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    const getData = async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(event.currentTarget)
+
+        let time = 'day';
+
+        switch (formData.get('duration')) {
+            case '0':
+                time = 'day';
+                break;
+            case '1':
+                time = 'week';
+                break;
+            case '2':
+                time = 'month';
+                break;
+            case '3':
+                time = 'three_months';
+                break;
+            default:
+                time = 'day';
+                break;
+        }
+
+        const location = formData.get('location');
+        const id = localStorage.getItem('customerId');
+        const response = await fetch(`http://${id}.localhost:8080/api/v1/location${location == '0' ? "" : location}/consumption_interval?interval=${time}`, {
+            method: 'GET',
+        })
+        const data = await response.json()
+
+        let addressMap = new Map();
+        data.forEach((d) => {
+            // if(addressMap.has(d.address)) {
+            //     addressMap.set(d.address, addressMap.get(d.address) + 1);
+            //     return;
+            // }
+            addressMap.set(d.address, {
+                id: d.address,
+                data: []
+            });
+        });
+
+        data.forEach((d) => {
+            addressMap.get(d.address).data.push({
+                x: d.timeUnit,
+                y: d.total,
+            });
+        });
+        addressMap = Array.from(addressMap.values());
+        setDisplayData(addressMap);
+        setHasData(true);
+        return new Response(JSON.stringify(data));
+    }
+
     useEffect(() => {
         getLocations();
+        lastWeekData();
     }, []);
+
+    if (!locationList) return (<div>Loading...</div>);
 
     return (
         <div>
             <div className="mt-10 px-6 h-auto overflow-auto">
-                <div className="grid gap-6 mb-8 md:grid-cols-4 xl:grid-cols-4">
-                    <Card className="bg-white">
-                        <div className="">
-                            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                                <CardTitle className="text-md font-medium">Choose a location</CardTitle>
-                                <LocationIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-                            </CardHeader>
-                            <CardContent>
-                                <div>
-                                    <Select name="location" onValueChange={(e) => e}>
-                                        <SelectTrigger className="w-[180px] bg-gray-600 text-white">
-                                            <SelectValue placeholder="Select Location" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem id={0} value="0">All Locations</SelectItem>
-                                            {locationList.map((location, i) => (
-                                                <SelectItem id={i + 1} value={location.id.toString()}>{location.address}</SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                            </CardContent>
-                        </div>
-                    </Card>
-                    <Card className="bg-white">
+                <form onSubmit={getData}>
+                    <div className="grid gap-8 mb-8 md:grid-cols-3 xl:grid-cols-3">
+                        <Card className="bg-white px-6">
+                            <div className="">
+                                <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+                                    <CardTitle className="text-md font-medium">Choose a location</CardTitle>
+                                    <LocationIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                                </CardHeader>
+                                <CardContent>
+                                    <div>
+                                        <Select name="location" onValueChange={(e) => setSelectedLocation(e)} className="text-start">
+                                            <SelectTrigger className="w-[180px] bg-gray-600 text-white">
+                                                <SelectValue placeholder="Select Location" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem id={0} value="0">All Locations</SelectItem>
+                                                {locationList && locationList.map((location, i) => (
+                                                    <SelectItem id={i + 1} value={location.id.toString().trim()}>{location.address.trim()}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                </CardContent>
+                            </div>
+                        </Card>
+                        {/* <Card className="bg-white">
                         <div className="">
                             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
                                 <CardTitle className="text-md font-medium">Choose a device</CardTitle>
@@ -96,7 +197,7 @@ export default function Component() {
                                 <div>
                                     <Select name="location" onValueChange={(e) => e}>
                                         <SelectTrigger className="w-[180px] bg-gray-600 text-white">
-                                            <SelectValue placeholder="Select Location" />
+                                            <SelectValue placeholder="Select Device" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectItem id={0} value="0">All Locations</SelectItem>
@@ -108,54 +209,48 @@ export default function Component() {
                                 </div>
                             </CardContent>
                         </div>
-                    </Card>
-                    <Card className="bg-white">
-                        <div className="">
-                            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                                <CardTitle className="text-md font-medium">Select a time period</CardTitle>
-                                <LocationIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-                            </CardHeader>
-                            <CardContent>
-                                <div>
-                                    <Select name="location" onValueChange={(e) => e}>
-                                        <SelectTrigger className="w-[180px] bg-gray-600 text-white">
-                                            <SelectValue placeholder="Select Location" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem id={0} value="0">All Locations</SelectItem>
-                                            {locationList.map((location, i) => (
-                                                <SelectItem id={i + 1} value={location.id.toString()}>{location.address}</SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                            </CardContent>
-                        </div>
-                    </Card>
-                    <Card className="bg-white">
-                        <div className="">
-                            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                                <CardTitle className="text-md font-medium">Choose a location</CardTitle>
-                                <LocationIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-                            </CardHeader>
-                            <CardContent>
-                                <div>
-                                    <Select name="location" onValueChange={(e) => e}>
-                                        <SelectTrigger className="w-[180px] bg-gray-600 text-white">
-                                            <SelectValue placeholder="Select Location" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem id={0} value="0">All Locations</SelectItem>
-                                            {locationList.map((location, i) => (
-                                                <SelectItem id={i + 1} value={location.id.toString()}>{location.address}</SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                            </CardContent>
-                        </div>
-                    </Card>
-                </div>
+                    </Card> */}
+                        <Card className="bg-white px-6">
+                            <div className="">
+                                <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+                                    <CardTitle className="text-md font-medium">Select a time period</CardTitle>
+                                    <TimeIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                                </CardHeader>
+                                <CardContent>
+                                    <div>
+                                        <Select name="duration" onValueChange={(e) => setSelectedDuration(e)}>
+                                            <SelectTrigger className="w-[180px] bg-gray-600 text-white">
+                                                <SelectValue placeholder="Select duration" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem id={0} value="0">Last day</SelectItem>
+                                                <SelectItem id={1} value="1">Last week</SelectItem>
+                                                <SelectItem id={2} value="2">Last month</SelectItem>
+                                                <SelectItem id={3} value="3">Last three months</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                </CardContent>
+                            </div>
+                        </Card>
+                        <Card className="bg-white px-6">
+                            <div className="">
+                                <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+                                    <CardTitle className="text-md font-medium">View your data</CardTitle>
+                                    <DataIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                                </CardHeader>
+                                <CardContent>
+                                    <Button type="submit"
+                                        className="w-28 font-bold bg-gray-600 hover:bg-[#c74f54] hover:text-white"
+                                        disabled={selectedDuration === null || selectedLocation === null}
+                                    >
+                                        Results
+                                    </Button>
+                                </CardContent>
+                            </div>
+                        </Card>
+                    </div>
+                </form>
                 <div className="grid gap-6 mb-8 md:grid-cols-1 xl:grid-cols-1">
                     <Card className="bg-white">
                         <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
@@ -163,7 +258,7 @@ export default function Component() {
                             <BarChartIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
                         </CardHeader>
                         <CardContent className="overflow-auto">
-                            <CurvedlineChart className="container w-full h-[500px] overflow-y-scroll" />
+                            <CurvedlineChart className="container w-full h-[750px] overflow-y-scroll" location={selectedLocation} data={displayData} hasData={hasData} />
                         </CardContent>
                     </Card>
                 </div>
@@ -312,6 +407,44 @@ function CalendarIcon(props) {
             <line x1="16" x2="16" y1="2" y2="6" />
             <line x1="8" x2="8" y1="2" y2="6" />
             <line x1="3" x2="21" y1="10" y2="10" />
+        </svg>
+    )
+}
+
+function TimeIcon(props) {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        >
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+    )
+}
+
+function DataIcon(props) {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        >
+            <path d="M3 3v18h18" />
+            <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3" />
         </svg>
     )
 }
@@ -477,39 +610,13 @@ function PieChart(props /* see data tab */) {
 }
 
 function CurvedlineChart(props) {
+    if (!props.hasData) return (<div>No data to display</div>);
     return (
         <div {...props}>
             <ResponsiveLine
-                data={[
-                    {
-                        id: "B",
-                        data: [
-                            { x: "2018-01-01", y: 7 },
-                            { x: "2018-01-02", y: 5 },
-                            { x: "2018-01-03", y: 11 },
-                            { x: "2018-01-04", y: 9 },
-                            { x: "2018-01-05", y: 12 },
-                            { x: "2018-01-06", y: 16 },
-                            { x: "2018-01-07", y: 13 },
-                            { x: "2018-01-08", y: 13 },
-                        ],
-                    },
-                    {
-                        id: "A",
-                        data: [
-                            { x: "2018-01-01", y: 9 },
-                            { x: "2018-01-02", y: 8 },
-                            { x: "2018-01-03", y: 13 },
-                            { x: "2018-01-04", y: 6 },
-                            { x: "2018-01-05", y: 8 },
-                            { x: "2018-01-06", y: 14 },
-                            { x: "2018-01-07", y: 11 },
-                            { x: "2018-01-08", y: 12 },
-                        ],
-                    },
-                ]}
+                data={props.data}
                 enableCrosshair={false}
-                margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
+                margin={{ top: 50, right: 110, bottom: 250, left: 60 }}
                 xScale={{
                     type: "time",
                     format: "%Y-%m-%d",
@@ -561,14 +668,15 @@ function CurvedlineChart(props) {
                         anchor: "bottom-right",
                         direction: "column",
                         justify: false,
-                        translateX: 100,
-                        translateY: 0,
+                        translateX: -1000,
+                        translateY: 150,
                         itemsSpacing: 0,
                         itemDirection: "left-to-right",
                         itemWidth: 80,
-                        itemHeight: 20,
-                        symbolSize: 14,
+                        itemHeight: 25,
+                        symbolSize: 18,
                         symbolShape: "circle",
+                        fontSize: 18,
                     },
                 ]}
                 theme={{
@@ -591,13 +699,13 @@ function DeviceIcon(props) {
                 xmlns="http://www.w3.org/2000/svg"
                 width="24'"
                 height="24"
-                viewBox="0 0 24 24" 
-                fill="none" 
+                viewBox="0 0 24 24"
+                fill="none"
                 stroke="currentColor"
-                strokeWidth="2" 
-                strokeLinecap="round" 
+                strokeWidth="2"
+                strokeLinecap="round"
                 strokeLinejoin="round">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        qqqq<rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                qqqq<rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
         </div>
     )
 }

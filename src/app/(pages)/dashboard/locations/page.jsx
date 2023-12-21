@@ -33,6 +33,11 @@ import { Label } from "@/components/ui/label"
 export default function Component() {
     const [deletedIds, setDeletedIds] = React.useState([]);
     const [locationsList, setLocationsList] = React.useState([])
+    const [currentBedrooms, setCurrentBedrooms] = React.useState(0)
+    const [currentOccupants, setCurrentOccupants] = React.useState(0)
+    const [currentSquareFootage, setCurrentSquareFootage] = React.useState(0)
+    const [currentAddress, setCurrentAddress] = React.useState('')
+    const [currentZipCode, setCurrentZipCode] = React.useState(0)
 
     const getLocations = async () => {
         try {
@@ -41,7 +46,7 @@ export default function Component() {
                 method: 'GET',
             })
             const data = await response.json()
-            
+
             setLocationsList(data);
             return new Response(JSON.stringify(data));
         } catch (err) {
@@ -79,7 +84,7 @@ export default function Component() {
             }
             return true;
         });
-        
+
         setLocationsList(tempLocationsList);
         setDeletedIds(tempIds);
         setCanShow(true);
@@ -104,11 +109,11 @@ export default function Component() {
             })
         })
         const data = await response.json()
-        
+
         let templocationsList = [...locationsList];
         templocationsList.push(data);
         setLocationsList(templocationsList);
-        
+
     }
 
     const [canShow, setCanShow] = React.useState(false)
@@ -141,6 +146,7 @@ export default function Component() {
                                     placeholder="2"
                                     className="col-span-3"
                                     name="bedrooms"
+                                    onChange={(e) => setCurrentBedrooms(e.target.value)}
                                 />
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
@@ -153,6 +159,7 @@ export default function Component() {
                                     placeholder="2"
                                     className="col-span-3"
                                     name="occupants"
+                                    onChange={(e) => setCurrentOccupants(e.target.value)}
                                 />
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
@@ -165,6 +172,7 @@ export default function Component() {
                                     placeholder="1400"
                                     className="col-span-3"
                                     name="squareFootage"
+                                    onChange={(e) => setCurrentSquareFootage(e.target.value)}
                                 />
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
@@ -176,6 +184,7 @@ export default function Component() {
                                     placeholder="XYZ Street, NY"
                                     className="col-span-3"
                                     name="address"
+                                    onChange={(e) => setCurrentAddress(e.target.value)}
                                 />
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
@@ -188,11 +197,17 @@ export default function Component() {
                                     placeholder="11201"
                                     className="col-span-3"
                                     name="zipcode"
+                                    onChange={(e) => setCurrentZipCode(e.target.value)}
                                 />
                             </div>
                         </div>
                         <DialogClose asChild className="text-end ml-[76%]">
-                            <Button type="submit" className="bg-gray-400 hover:bg-gray-700 rounded-md" size="lg">Add</Button>
+                            <Button
+                                type="submit"
+                                className="bg-gray-400 hover:bg-gray-700 rounded-md"
+                                size="lg"
+                                disabled={currentBedrooms == 0 || currentOccupants == 0 || currentSquareFootage == 0 || currentAddress == '' || currentZipCode == 0}
+                            >Add</Button>
                         </DialogClose>
                     </form>
                 </DialogContent>

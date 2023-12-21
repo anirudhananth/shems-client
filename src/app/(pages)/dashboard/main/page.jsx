@@ -15,11 +15,18 @@ import { ResponsivePie } from '@nivo/pie'
 export default function Component() {
   const [locationConsumptions, setLocationConsumptions] = useState([]);
   const [deviceConsumptions, setDeviceConsumptions] = useState([]);
+  const [totalConsumption, setTotalConsumption] = useState(0);
+  const [totalConsumptionDelta, setTotalConsumptionDelta] = useState(0);
+  const [averageConsumption, setAverageConsumption] = useState(0);
+  const [averageConsumptionDelta, setAverageConsumptionDelta] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [totalPriceDelta, setTotalPriceDelta] = useState(0);
+  const [allTimePrice, setAllTimePrice] = useState(0);
 
   const getTotalConsumption = async () => {
     try {
       const id = localStorage.getItem('customerId');
-      const externalApiResponse = await fetch(`http://${id}.localhost:8080/api/v1/device/most`, {
+      const externalApiResponse = await fetch(`http://${id}.localhost:8080/api/v1/location/total`, {
         method: 'GET',
       });
 
@@ -29,6 +36,74 @@ export default function Component() {
 
       const data = await externalApiResponse.json();
       console.log("Total Consumption: ", data);
+      setTotalConsumption(round(data.total, 1));
+      setTotalConsumptionDelta(round(data.percentageDelta, 1));
+
+      return new Response(JSON.stringify(data));
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  const getAverageConsumption = async () => {
+    try {
+      const id = localStorage.getItem('customerId');
+      const externalApiResponse = await fetch(`http://${id}.localhost:8080/api/v1/location/avg`, {
+        method: 'GET',
+      });
+
+      if (!externalApiResponse.ok) {
+        throw new Error(`HTTP error! status: ${externalApiResponse.status}`);
+      }
+
+      const data = await externalApiResponse.json();
+      console.log("Average Consumption: ", data);
+      setAverageConsumption(round(data.total, 1));
+      setAverageConsumptionDelta(round(data.percentageDelta, 1));
+
+      return new Response(JSON.stringify(data));
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  const getTotalPrice = async () => {
+    try {
+      const id = localStorage.getItem('customerId');
+      const externalApiResponse = await fetch(`http://${id}.localhost:8080/api/v1/price/total`, {
+        method: 'GET',
+      });
+
+      if (!externalApiResponse.ok) {
+        throw new Error(`HTTP error! status: ${externalApiResponse.status}`);
+      }
+
+      const data = await externalApiResponse.json();
+      console.log("Total Price: ", data);
+      setTotalPrice(round(data.price, 1));
+      setTotalPriceDelta(round(data.percentageDelta, 1));
+
+      return new Response(JSON.stringify(data));
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  const getAllTimePrice = async () => {
+    try {
+      const id = localStorage.getItem('customerId');
+      const externalApiResponse = await fetch(`http://${id}.localhost:8080/api/v1/price/history`, {
+        method: 'GET',
+      });
+
+      if (!externalApiResponse.ok) {
+        throw new Error(`HTTP error! status: ${externalApiResponse.status}`);
+      }
+
+      const data = await externalApiResponse.json();
+      console.log("All Time Price: ", data);
+      setAllTimePrice(round(data.price, 1));
+
       return new Response(JSON.stringify(data));
     } catch (err) {
       console.error(err);
@@ -89,6 +164,9 @@ export default function Component() {
     getLocationConsumption();
     getDeviceConsumption();
     getTotalConsumption();
+    getAverageConsumption();
+    getTotalPrice();
+    getAllTimePrice();
   }, []);
 
   return (
@@ -97,42 +175,53 @@ export default function Component() {
         <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
           <Card className="bg-white">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-              <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+              <CardTitle className="text-sm font-medium">Total Energy Consumed</CardTitle>
               <DollarSignIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">$45,231.89</div>
-              <p className="text-xs text-gray-500 dark:text-gray-400">+20.1% from last month</p>
+              <div className="text-2xl font-bold">{totalConsumption} kWh</div>
+              <p className={`text-xs font-bold ${totalConsumptionDelta > 0 ? "text-[#de0a26]" : "text-[#79B791]"}`}>
+                {totalConsumptionDelta > 0 ? '+' : ''}
+                {totalConsumptionDelta}% from last month
+              </p>
             </CardContent>
           </Card>
           <Card className="bg-white">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-              <CardTitle className="text-sm font-medium">Active Users</CardTitle>
+              <CardTitle className="text-sm font-medium">Average Consumption</CardTitle>
               <UsersIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">+2350</div>
-              <p className="text-xs text-gray-500 dark:text-gray-400">+18% from last month</p>
+              <div className="text-2xl font-bold">{averageConsumption} kWh</div>
+              <p className={`text-xs font-bold ${averageConsumptionDelta > 0 ? "text-[#de0a26]" : "text-[#79B791]"}`}>
+                {averageConsumptionDelta > 0 ? '+' : ''}
+                {averageConsumptionDelta}% from last month
+              </p>
             </CardContent>
           </Card>
           <Card className="bg-white">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-              <CardTitle className="text-sm font-medium">Page Views</CardTitle>
+              <CardTitle className="text-sm font-medium">Current Month Expense</CardTitle>
               <ViewIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">+150k</div>
-              <p className="text-xs text-gray-500 dark:text-gray-400">+25.5% from last month</p>
+              <div className="text-2xl font-bold">${totalPrice}</div>
+              <p className={`text-xs font-bold ${totalPriceDelta > 0 ? "text-[#de0a26]" : "text-[#79B791]"}`}>
+                {totalPriceDelta > 0 ? '+' : ''}
+                {totalPriceDelta}% from last month
+              </p>
             </CardContent>
           </Card>
           <Card className="bg-white">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-              <CardTitle className="text-sm font-medium">New Customers</CardTitle>
+              <CardTitle className="text-sm font-medium">All time expense</CardTitle>
               <UsersIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">+573</div>
-              <p className="text-xs text-gray-500 dark:text-gray-400">+22.1% from last month</p>
+              <div className="text-2xl font-bold">${allTimePrice}</div>
+              {/* <p className={`text-xs font-bold text-gray-400`}>
+                That's a lot of money!
+              </p> */}
             </CardContent>
           </Card>
         </div>
@@ -143,7 +232,7 @@ export default function Component() {
               <BarChartIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
             </CardHeader>
             <CardContent>
-              <BarChart className="w-full h-[500px]" data={deviceConsumptions}/>
+              <BarChart className="w-full h-[500px]" data={deviceConsumptions} />
             </CardContent>
           </Card>
           <Card className="bg-white">
@@ -152,7 +241,7 @@ export default function Component() {
               <BarChartIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
             </CardHeader>
             <CardContent className="overflow-auto">
-              <PieChart className="container w-full h-[500px] overflow-y-scroll" data={locationConsumptions}/>
+              <PieChart className="container w-full h-[500px] overflow-y-scroll" data={locationConsumptions} />
             </CardContent>
           </Card>
         </div>
@@ -203,6 +292,10 @@ export default function Component() {
       </div>
     </div>
   )
+}
+
+function round(value, decimals) {
+  return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
 }
 
 function BarChart(props) {

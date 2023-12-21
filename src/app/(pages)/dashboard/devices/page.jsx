@@ -39,6 +39,7 @@ export default function Component() {
     const [allowedModels, setAllowedModels] = React.useState([]);
     const [currentType, setCurrentType] = React.useState('');
     const [currentModel, setCurrentModel] = React.useState([]);
+    const [currentLocation, setCurrentLocation] = React.useState('0');
 
     const getLocations = async () => {
         try {
@@ -175,7 +176,7 @@ export default function Component() {
     const alterDeviceList = async (value) => {
         try {
             const id = localStorage.getItem('customerId');
-            if(value == 0) {
+            if (value == 0) {
                 getDevices();
                 return;
             }
@@ -247,7 +248,7 @@ export default function Component() {
                                     <Label htmlFor="Location" className="text-right">
                                         Location
                                     </Label>
-                                    <Select name="location">
+                                    <Select name="location" onValueChange={e => setCurrentLocation(e)}>
                                         <SelectTrigger className="w-[180px]">
                                             <SelectValue placeholder="Select location" />
                                         </SelectTrigger>
@@ -260,7 +261,12 @@ export default function Component() {
                                 </div>
                             </div>
                             <DialogClose asChild className="text-end ml-[76%]">
-                                <Button type="submit" className="bg-gray-400 hover:bg-gray-700 rounded-md" size="lg">Add</Button>
+                                <Button
+                                    type="submit"
+                                    className="bg-gray-400 hover:bg-gray-700 rounded-md"
+                                    size="lg"
+                                    disabled={currentType == '' || currentModel == [] || currentLocation == '0'}
+                                >Add</Button>
                             </DialogClose>
                         </form>
                     </DialogContent>
