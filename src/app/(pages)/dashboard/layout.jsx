@@ -56,8 +56,8 @@ export default function Component({ children }) {
   document.cookie = `accessToken=${user.sid}; path=/;`
 
   return (
-    <div className="flex overflow-auto">
-      <div className="flex flex-col w-64 bg-white overflow-hidden bg-[#f1f1f1]">
+    <div className="relative flex overflow-auto">
+      <div className="fixed top-0 left-0 h-screen flex flex-col w-64 bg-white overflow-hidden bg-[#f1f1f1]">
         <div className="flex items-center justify-center h-20 shadow-md text-[42px] font-bold text-gray-700 border-r-4">
           SHEMS
         </div>
@@ -120,13 +120,13 @@ export default function Component({ children }) {
           </Link>
         </nav>
       </div>
-      <main className="flex-1 flex flex-col overflow-hidden bg-gray-100">
+      <main className="flex-1 flex flex-col overflow-hidden bg-gray-100 ml-[15%] w-[80%]">
         <div className="px-6 py-4 border-b-4 w-[80%] ml-[10%]">
           <h2 className="text-2xl font-semibold text-gray-700 ml-[5%] mt-2">{
             pathname == "/dashboard/main" ? "Dashboard" : pathname == "/dashboard/devices" ? "Devices" : pathname == "/dashboard/profile" ? "Profile" : pathname == "/dashboard/locations" ? "Locations" : "Usage"
           }</h2>
         </div>
-        <div className="mt-10 px-6">
+        <div className="mt-10 px-6 min-h-screen">
           {children}
           {/* <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
             <Card>

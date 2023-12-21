@@ -36,7 +36,9 @@ export default function Component() {
         }
 
         const data = await externalApiResponse.json();
-        
+        setAddress(data.address);
+
+        console.log("Address: ", data);
         if(!data) return;
         customerData = data;
         return new Response(JSON.stringify(data));

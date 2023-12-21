@@ -14,6 +14,51 @@ import { ResponsivePie } from '@nivo/pie'
 
 export default function Component() {
   const [locationConsumptions, setLocationConsumptions] = useState([]);
+  const [deviceConsumptions, setDeviceConsumptions] = useState([]);
+
+  const getTotalConsumption = async () => {
+    try {
+      const id = localStorage.getItem('customerId');
+      const externalApiResponse = await fetch(`http://${id}.localhost:8080/api/v1/device/most`, {
+        method: 'GET',
+      });
+
+      if (!externalApiResponse.ok) {
+        throw new Error(`HTTP error! status: ${externalApiResponse.status}`);
+      }
+
+      const data = await externalApiResponse.json();
+      console.log("Total Consumption: ", data);
+      return new Response(JSON.stringify(data));
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  const getDeviceConsumption = async () => {
+    try {
+      const id = localStorage.getItem('customerId');
+      const externalApiResponse = await fetch(`http://${id}.localhost:8080/api/v1/device/consumption`, {
+        method: 'GET',
+      });
+
+      if (!externalApiResponse.ok) {
+        throw new Error(`HTTP error! status: ${externalApiResponse.status}`);
+      }
+
+      let data = await externalApiResponse.json();
+      data = data.map(d => {
+        return {
+          name: d.type,
+          data: Math.floor(d.value)
+        }
+      })
+      setDeviceConsumptions(data);
+      return new Response(JSON.stringify(data));
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   const getLocationConsumption = async () => {
     try {
@@ -42,13 +87,15 @@ export default function Component() {
 
   useEffect(() => {
     getLocationConsumption();
+    getDeviceConsumption();
+    getTotalConsumption();
   }, []);
 
   return (
     <div>
       <div className="mt-10 px-6 h-auto overflow-auto">
         <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
-          <Card>
+          <Card className="bg-white">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
               <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
               <DollarSignIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
@@ -58,7 +105,7 @@ export default function Component() {
               <p className="text-xs text-gray-500 dark:text-gray-400">+20.1% from last month</p>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-white">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
               <CardTitle className="text-sm font-medium">Active Users</CardTitle>
               <UsersIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
@@ -68,7 +115,7 @@ export default function Component() {
               <p className="text-xs text-gray-500 dark:text-gray-400">+18% from last month</p>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-white">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
               <CardTitle className="text-sm font-medium">Page Views</CardTitle>
               <ViewIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
@@ -78,7 +125,7 @@ export default function Component() {
               <p className="text-xs text-gray-500 dark:text-gray-400">+25.5% from last month</p>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-white">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
               <CardTitle className="text-sm font-medium">New Customers</CardTitle>
               <UsersIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
@@ -90,26 +137,26 @@ export default function Component() {
           </Card>
         </div>
         <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-2">
-          <Card>
+          <Card className="bg-white">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-              <CardTitle className="text-sm font-medium">Revenue Chart</CardTitle>
+              <CardTitle className="text-sm font-medium">Device Energy Consumption (in kWh)</CardTitle>
               <BarChartIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
             </CardHeader>
             <CardContent>
-              <BarChart className="w-full h-[400px]"/>
+              <BarChart className="w-full h-[500px]" data={deviceConsumptions}/>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-white">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
               <CardTitle className="text-sm font-medium">User Statistics (in kWh)</CardTitle>
               <BarChartIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
             </CardHeader>
             <CardContent className="overflow-auto">
-              <MyResponsivePie className="container w-full h-[400px] overflow-y-scroll" data={locationConsumptions}/>
+              <PieChart className="container w-full h-[500px] overflow-y-scroll" data={locationConsumptions}/>
             </CardContent>
           </Card>
         </div>
-        <Card>
+        {/* <Card className="bg-white">
           <Table>
             <TableHeader>
               <TableRow>
@@ -152,7 +199,7 @@ export default function Component() {
               </TableRow>
             </TableBody>
           </Table>
-        </Card>
+        </Card> */}
       </div>
     </div>
   )
@@ -160,52 +207,19 @@ export default function Component() {
 
 function BarChart(props) {
   const className = props.className;
-  console.log("Class: ", props.x);
   return (
     <div className={className}>
       <ResponsiveBar
-        data={[
-          {
-            name: "A",
-            data: 111,
-          },
-          {
-            name: "B",
-            data: 157,
-          },
-          {
-            name: "C",
-            data: 129,
-          },
-          {
-            name: "D",
-            data: 187,
-          },
-          {
-            name: "E",
-            data: 119,
-          },
-          {
-            name: "F",
-            data: 22,
-          },
-          {
-            name: "G",
-            data: 101,
-          },
-          {
-            name: "H",
-            data: 83,
-          },
-        ]}
+        data={props.data}
         keys={["data"]}
         indexBy="name"
-        margin={{ top: 50, right: 50, bottom: 50, left: 60 }}
+        margin={{ top: 0, right: 10, bottom: 55, left: 100 }}
         padding={0.3}
         valueScale={{ type: "linear" }}
         indexScale={{ type: "band", round: true }}
-        colors={{ scheme: "paired" }}
+        colors={{ scheme: "set3" }}
         borderWidth={1}
+        layout="horizontal"
         borderColor={{
           from: "color",
           modifiers: [["darker", 0.2]],
@@ -216,20 +230,20 @@ function BarChart(props) {
           tickSize: 5,
           tickPadding: 5,
           tickRotation: 0,
-          legend: "Name",
+          legend: "Energy Consumed",
           legendPosition: "middle",
           legendOffset: 45,
           truncateTickAt: 0,
         }}
-        axisLeft={{
-          tickSize: 5,
-          tickPadding: 5,
-          tickRotation: 0,
-          legend: "Number",
-          legendPosition: "middle",
-          legendOffset: -45,
-          truncateTickAt: 0,
-        }}
+        // axisLeft={{
+        //   tickSize: 5,
+        //   tickPadding: 5,
+        //   tickRotation: 0,
+        //   legend: "Number",
+        //   legendPosition: "middle",
+        //   legendOffset: -45,
+        //   truncateTickAt: 0,
+        // }}
         theme={{
           tooltip: {
             container: {
@@ -291,12 +305,12 @@ function CalendarIcon(props) {
   )
 }
 
-function MyResponsivePie(data /* see data tab */) {
+function PieChart(props /* see data tab */) {
   return (
-    <div className={data.className + "!overflow-auto"}>
+    <div className={props.className + "!overflow-auto"}>
       <ResponsivePie
-        data={data.data}
-        margin={{ top: 60, right: 80, bottom: 60, left: -200 }}
+        data={props.data}
+        margin={{ top: 80, right: 80, bottom: 80, left: -160 }}
         innerRadius={0.5}
         padAngle={0.7}
         cornerRadius={3}
