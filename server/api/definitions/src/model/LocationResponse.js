@@ -63,11 +63,11 @@ class LocationResponse {
      * @return {boolean} to indicate whether the JSON data is valid with respect to <code>LocationResponse</code>.
      */
     static validateJSON(data) {
-        // ensure the json data is a string
+        
         if (data['address'] && !(typeof data['address'] === 'string' || data['address'] instanceof String)) {
             throw new Error("Expected the field `address` to be a primitive type in the JSON string but got " + data['address']);
         }
-        // ensure the json data is a string
+        
         if (data['zipCode'] && !(typeof data['zipCode'] === 'string' || data['zipCode'] instanceof String)) {
             throw new Error("Expected the field `zipCode` to be a primitive type in the JSON string but got " + data['zipCode']);
         }

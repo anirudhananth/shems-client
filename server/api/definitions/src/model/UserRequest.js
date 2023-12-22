@@ -70,21 +70,21 @@ class UserRequest {
      * @return {boolean} to indicate whether the JSON data is valid with respect to <code>UserRequest</code>.
      */
     static validateJSON(data) {
-        // check to make sure all required properties are present in the JSON string
+        
         for (const property of UserRequest.RequiredProperties) {
             if (!data[property]) {
                 throw new Error("The required field `" + property + "` is not found in the JSON data: " + JSON.stringify(data));
             }
         }
-        // ensure the json data is a string
+        
         if (data['name'] && !(typeof data['name'] === 'string' || data['name'] instanceof String)) {
             throw new Error("Expected the field `name` to be a primitive type in the JSON string but got " + data['name']);
         }
-        // ensure the json data is a string
+        
         if (data['email'] && !(typeof data['email'] === 'string' || data['email'] instanceof String)) {
             throw new Error("Expected the field `email` to be a primitive type in the JSON string but got " + data['email']);
         }
-        // ensure the json data is a string
+        
         if (data['billingAddress'] && !(typeof data['billingAddress'] === 'string' || data['billingAddress'] instanceof String)) {
             throw new Error("Expected the field `billingAddress` to be a primitive type in the JSON string but got " + data['billingAddress']);
         }

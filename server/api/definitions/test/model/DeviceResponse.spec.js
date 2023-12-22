@@ -13,13 +13,13 @@
 
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
-    // AMD.
+    
     define(['expect.js', process.cwd()+'/src/index'], factory);
   } else if (typeof module === 'object' && module.exports) {
-    // CommonJS-like environments that support module.exports, like Node.
+    
     factory(require('expect.js'), require(process.cwd()+'/src/index'));
   } else {
-    // Browser globals (root is window)
+    
     factory(root.expect, root.OpenApiDefinition);
   }
 }(this, function(expect, OpenApiDefinition) {
@@ -32,7 +32,7 @@
   });
 
   var getProperty = function(object, getter, property) {
-    // Use getter method if present; otherwise, get the property directly.
+    
     if (typeof object[getter] === 'function')
       return object[getter]();
     else
@@ -40,7 +40,7 @@
   }
 
   var setProperty = function(object, setter, property, value) {
-    // Use setter method if present; otherwise, set the property directly.
+    
     if (typeof object[setter] === 'function')
       object[setter](value);
     else
@@ -49,31 +49,31 @@
 
   describe('DeviceResponse', function() {
     it('should create an instance of DeviceResponse', function() {
-      // uncomment below and update the code to test DeviceResponse
+      
       //var instance = new OpenApiDefinition.DeviceResponse();
       //expect(instance).to.be.a(OpenApiDefinition.DeviceResponse);
     });
 
     it('should have the property type (base name: "type")', function() {
-      // uncomment below and update the code to test the property type
+      
       //var instance = new OpenApiDefinition.DeviceResponse();
       //expect(instance).to.be();
     });
 
     it('should have the property modelNumber (base name: "modelNumber")', function() {
-      // uncomment below and update the code to test the property modelNumber
+      
       //var instance = new OpenApiDefinition.DeviceResponse();
       //expect(instance).to.be();
     });
 
     it('should have the property location (base name: "location")', function() {
-      // uncomment below and update the code to test the property location
+      
       //var instance = new OpenApiDefinition.DeviceResponse();
       //expect(instance).to.be();
     });
 
     it('should have the property enrollmentDate (base name: "enrollmentDate")', function() {
-      // uncomment below and update the code to test the property enrollmentDate
+      
       //var instance = new OpenApiDefinition.DeviceResponse();
       //expect(instance).to.be();
     });

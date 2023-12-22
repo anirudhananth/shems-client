@@ -117,7 +117,7 @@ export default function Component() {
     }
 
     const [canShow, setCanShow] = React.useState(false)
-    // numberOfBedrooms, squareFootage, address, zipCode
+    
 
     return (
         <div className="w-full">

@@ -20,7 +20,7 @@ Method | HTTP request | Description
 import OpenApiDefinition from 'open_api_definition';
 
 let apiInstance = new OpenApiDefinition.DeviceControllerApi();
-let customerId = "customerId_example"; // String | 
+let customerId = "customerId_example"; 
 apiInstance.getDevices(customerId, (error, data, response) => {
   if (error) {
     console.error(error);

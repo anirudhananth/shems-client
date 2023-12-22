@@ -16,7 +16,7 @@ export default function Component() {
   const { user, error, isLoading } = useUser();
   const router = useRouter();
 
-  // [user, setUser] = useState(user);
+  
   useEffect(() => {
     if(user) {
       router.push('/dashboard/main');

@@ -70,12 +70,12 @@ class DeviceResponse {
      * @return {boolean} to indicate whether the JSON data is valid with respect to <code>DeviceResponse</code>.
      */
     static validateJSON(data) {
-        // ensure the json data is a string
+        
         if (data['type'] && !(typeof data['type'] === 'string' || data['type'] instanceof String)) {
             throw new Error("Expected the field `type` to be a primitive type in the JSON string but got " + data['type']);
         }
-        // validate the optional field `location`
-        if (data['location']) { // data not null
+        
+        if (data['location']) { 
           LocationResponse.validateJSON(data['location']);
         }
 

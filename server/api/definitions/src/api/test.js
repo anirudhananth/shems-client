@@ -5,11 +5,11 @@ const callApi = async () => {
         const cookie = cookies();
         const appSessionCookie = cookie.get("appSession");
 
-        // If the cookie is not found, handle it accordingly
+        
         
         if (!appSessionCookie) {
             console.error("appSession cookie is not set");
-            // You might want to handle this situation by throwing an error or returning a default value
+            
             return;
         }
         const res = await fetch(`http://localhost:8080/api/v1/device/1/get`, {
@@ -24,12 +24,12 @@ const callApi = async () => {
             throw new Error(`HTTP error! status: ${res.status}`);
         }
 
-        const data = await res.json(); // Correctly parsing the response as JSON
+        const data = await res.json(); 
         
-        return data; // It's a good practice to return the fetched data
+        return data; 
     } catch (err) {
         console.error(err);
-        // You might want to handle the error more explicitly, possibly returning a default value or an error indication
+        
     }
 };
 

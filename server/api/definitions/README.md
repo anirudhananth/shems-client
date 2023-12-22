@@ -102,7 +102,7 @@ var OpenApiDefinition = require('open_api_definition');
 
 
 var api = new OpenApiDefinition.DeviceControllerApi()
-var customerId = "customerId_example"; // {String} 
+var customerId = "customerId_example"; 
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);

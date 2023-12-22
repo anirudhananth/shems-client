@@ -50,7 +50,7 @@ export default class DeviceControllerApi {
      */
     getDevices(customerId, callback) {
       let postBody = null;
-      // verify the required parameter 'customerId' is set
+      
       if (customerId === undefined || customerId === null) {
         throw new Error("Missing the required parameter 'customerId' when calling getDevices");
       }

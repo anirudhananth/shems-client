@@ -66,11 +66,11 @@ class UserResponse {
      * @return {boolean} to indicate whether the JSON data is valid with respect to <code>UserResponse</code>.
      */
     static validateJSON(data) {
-        // ensure the json data is a string
+        
         if (data['name'] && !(typeof data['name'] === 'string' || data['name'] instanceof String)) {
             throw new Error("Expected the field `name` to be a primitive type in the JSON string but got " + data['name']);
         }
-        // ensure the json data is a string
+        
         if (data['email'] && !(typeof data['email'] === 'string' || data['email'] instanceof String)) {
             throw new Error("Expected the field `email` to be a primitive type in the JSON string but got " + data['email']);
         }

@@ -149,7 +149,7 @@ class ApiClient {
 
         var url = this.basePath + path;
 
-        // use API (operation, path) base path if defined
+        
         if (apiBasePath !== null && apiBasePath !== undefined) {
             url = apiBasePath + path;
         }
@@ -204,7 +204,7 @@ class ApiClient {
     * @returns {Boolean} <code>true</code> if <code>param</code> represents a file.
     */
     isFileParam(param) {
-        // fs.ReadStream in Node.js and Electron (but not in runtime like browserify)
+        
         if (typeof require === 'function') {
             let fs;
             try {
@@ -215,17 +215,17 @@ class ApiClient {
             }
         }
 
-        // Buffer in Node.js
+        
         if (typeof Buffer === 'function' && param instanceof Buffer) {
             return true;
         }
 
-        // Blob in browser
+        
         if (typeof Blob === 'function' && param instanceof Blob) {
             return true;
         }
 
-        // File in browser (it seems File object is also instance of Blob, but keep this for safe)
+        
         if (typeof File === 'function' && param instanceof File) {
             return true;
         }
@@ -356,11 +356,11 @@ class ApiClient {
             return null;
         }
 
-        // Rely on SuperAgent for parsing response body.
-        // See http://visionmedia.github.io/superagent/#parsing-response-bodies
+        
+        
         var data = response.body;
         if (data == null || (typeof data === 'object' && typeof data.length === 'undefined' && !Object.keys(data).length)) {
-            // SuperAgent does not always produce a body; use the unparsed response as a fallback
+            
             data = response.text;
         }
 
@@ -408,30 +408,30 @@ class ApiClient {
             }
         }
 
-        // apply authentications
+        
         this.applyAuthToRequest(request, authNames);
 
-        // set query parameters
+        
         if (httpMethod.toUpperCase() === 'GET' && this.cache === false) {
             queryParams['_'] = new Date().getTime();
         }
 
         request.query(this.normalizeParams(queryParams));
 
-        // set header parameters
+        
         request.set(this.defaultHeaders).set(this.normalizeParams(headerParams));
 
-        // set requestAgent if it is set by user
+        
         if (this.requestAgent) {
           request.agent(this.requestAgent);
         }
 
-        // set request timeout
+        
         request.timeout(this.timeout);
 
         var contentType = this.jsonPreferredMime(contentTypes);
         if (contentType) {
-            // Issue with superagent and multipart/form-data (https://github.com/visionmedia/superagent/issues/746)
+            
             if(contentType != 'multipart/form-data') {
                 request.type(contentType);
             }
@@ -445,11 +445,11 @@ class ApiClient {
                 if (_formParams.hasOwnProperty(key)) {
                     let _formParamsValue = _formParams[key];
                     if (this.isFileParam(_formParamsValue)) {
-                        // file field
+                        
                         request.attach(key, _formParamsValue);
                     } else if (Array.isArray(_formParamsValue) && _formParamsValue.length
                         && this.isFileParam(_formParamsValue[0])) {
-                        // multiple files
+                        
                         _formParamsValue.forEach(file => request.attach(key, file));
                     } else {
                         request.field(key, _formParamsValue);
@@ -474,7 +474,7 @@ class ApiClient {
           request.responseType('text');
         }
 
-        // Attach previously saved cookies, if enabled
+        
         if (this.enableCookies){
             if (typeof window === 'undefined') {
                 this.agent._attachCookies(request);
@@ -545,20 +545,20 @@ class ApiClient {
                 return data;
             default:
                 if (type === Object) {
-                    // generic object, return directly
+                    
                     return data;
                 } else if (typeof type.constructFromObject === 'function') {
-                    // for model type like User and enum class
+                    
                     return type.constructFromObject(data);
                 } else if (Array.isArray(type)) {
-                    // for array type like: ['String']
+                    
                     var itemType = type[0];
 
                     return data.map((item) => {
                         return ApiClient.convertToType(item, itemType);
                     });
                 } else if (typeof type === 'object') {
-                    // for plain object type like: {'String': 'Integer'}
+                    
                     var keyType, valueType;
                     for (var k in type) {
                         if (type.hasOwnProperty(k)) {
@@ -579,7 +579,7 @@ class ApiClient {
 
                     return result;
                 } else {
-                    // for unknown type, return the data directly
+                    
                     return data;
                 }
         }
@@ -601,7 +601,7 @@ class ApiClient {
     getBasePathFromSettings(index, variables={}) {
         var servers = this.hostSettings();
 
-        // check array index out of bound
+        
         if (index < 0 || index >= servers.length) {
             throw new Error("Invalid index " + index + " when selecting the host settings. Must be less than " + servers.length);
         }
@@ -609,7 +609,7 @@ class ApiClient {
         var server = servers[index];
         var url = server['url'];
 
-        // go through variable and assign a value
+        
         for (var variable_name in server['variables']) {
             if (variable_name in variables) {
                 let variable = server['variables'][variable_name];
@@ -619,7 +619,7 @@ class ApiClient {
                     throw new Error("The variable `" + variable_name + "` in the host URL has invalid value " + variables[variable_name] + ". Must be " + server['variables'][variable_name]['enum_values'] + ".");
                 }
             } else {
-                // use default value
+                
                 url = url.replace("{" + variable_name + "}", server['variables'][variable_name]['default_value'])
             }
         }

@@ -50,7 +50,7 @@ export default class UserControllerApi {
      */
     register(userRequest, callback) {
       let postBody = userRequest;
-      // verify the required parameter 'userRequest' is set
+      
       if (userRequest === undefined || userRequest === null) {
         throw new Error("Missing the required parameter 'userRequest' when calling register");
       }

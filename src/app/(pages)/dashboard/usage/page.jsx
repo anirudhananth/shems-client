@@ -1,7 +1,4 @@
-/**
- * v0 by Vercel.
- * @see https://v0.dev/t/zump6zjeVnu
- */
+
 'use client'
 import Link from "next/link"
 import { CardTitle, CardHeader, CardContent, Card } from "@/components/ui/card"
@@ -42,9 +39,11 @@ export default function Component() {
     const [locationList, setLocationsList] = useState([])
     const [selectedLocation, setSelectedLocation] = useState(null);
     const [selectedDevice, setSelectedDevice] = useState(null);
-    const [selectedDuration, setSelectedDuration] = useState(null);
+    const [selectedDuration, setSelectedDuration] = useState(1);
     const [displayData, setDisplayData] = useState(null);
     const [hasData, setHasData] = useState(false);
+    const [hasSelectedDuration, setHasSelectedDuration] = useState(false);
+    const [hasSelectedLocation, setHasSelectedLocation] = useState(false);
 
     const getLocations = async () => {
         try {
@@ -71,10 +70,6 @@ export default function Component() {
 
             let addressMap = new Map();
             data.forEach((d) => {
-                // if(addressMap.has(d.address)) {
-                //     addressMap.set(d.address, addressMap.get(d.address) + 1);
-                //     return;
-                // }
                 addressMap.set(d.address, {
                     id: d.address,
                     data: []
@@ -90,6 +85,7 @@ export default function Component() {
             addressMap = Array.from(addressMap.values());
             setDisplayData(addressMap);
             setHasData(true);
+
             return new Response(JSON.stringify(data));
         } catch (err) {
             console.error(err);
@@ -130,10 +126,6 @@ export default function Component() {
 
         let addressMap = new Map();
         data.forEach((d) => {
-            // if(addressMap.has(d.address)) {
-            //     addressMap.set(d.address, addressMap.get(d.address) + 1);
-            //     return;
-            // }
             addressMap.set(d.address, {
                 id: d.address,
                 data: []
@@ -147,9 +139,11 @@ export default function Component() {
             });
         });
         addressMap = Array.from(addressMap.values());
-        console.log(addressMap);
-        // setDisplayData(addressMap);
-        // setHasData(true);
+
+        setSelectedDuration(formData.get('duration'));
+        setSelectedLocation(formData.get('location'));
+        setDisplayData(addressMap);
+        setHasData(true);
         return new Response(JSON.stringify(data));
     }
 
@@ -173,13 +167,13 @@ export default function Component() {
                                 </CardHeader>
                                 <CardContent>
                                     <div>
-                                        <Select name="location" onValueChange={(e) => setSelectedLocation(e)} className="text-start">
+                                        <Select name="location" onValueChange={e => setHasSelectedLocation(true)} className="text-start">
                                             <SelectTrigger className="w-[180px] bg-gray-600 text-white">
                                                 <SelectValue placeholder="Select Location" />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectItem id={0} value="0">All Locations</SelectItem>
-                                                {locationList && locationList.map((location, i) => (
+                                                {locationList != [] && locationList.map((location, i) => (
                                                     <SelectItem id={i + 1} value={location.id.toString().trim()}>{location.address.trim()}</SelectItem>
                                                 ))}
                                             </SelectContent>
@@ -188,29 +182,6 @@ export default function Component() {
                                 </CardContent>
                             </div>
                         </Card>
-                        {/* <Card className="bg-white">
-                        <div className="">
-                            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                                <CardTitle className="text-md font-medium">Choose a device</CardTitle>
-                                <DeviceIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-                            </CardHeader>
-                            <CardContent>
-                                <div>
-                                    <Select name="location" onValueChange={(e) => e}>
-                                        <SelectTrigger className="w-[180px] bg-gray-600 text-white">
-                                            <SelectValue placeholder="Select Device" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem id={0} value="0">All Locations</SelectItem>
-                                            {locationList.map((location, i) => (
-                                                <SelectItem id={i + 1} value={location.id.toString()}>{location.address}</SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                            </CardContent>
-                        </div>
-                    </Card> */}
                         <Card className="bg-white px-6">
                             <div className="">
                                 <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
@@ -219,12 +190,12 @@ export default function Component() {
                                 </CardHeader>
                                 <CardContent>
                                     <div>
-                                        <Select name="duration" onValueChange={(e) => setSelectedDuration(e)}>
+                                        <Select name="duration" onValueChange={e => setHasSelectedDuration(true)}>
                                             <SelectTrigger className="w-[180px] bg-gray-600 text-white">
                                                 <SelectValue placeholder="Select duration" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem id={0} value="0">Last day</SelectItem>
+                                                <SelectItem id={0} value="0">Day</SelectItem>
                                                 <SelectItem id={1} value="1">Last week</SelectItem>
                                                 <SelectItem id={2} value="2">Last month</SelectItem>
                                                 <SelectItem id={3} value="3">Last three months</SelectItem>
@@ -243,7 +214,7 @@ export default function Component() {
                                 <CardContent>
                                     <Button type="submit"
                                         className="w-28 font-bold bg-gray-600 hover:bg-[#c74f54] hover:text-white"
-                                        disabled={selectedDuration === null || selectedLocation === null}
+                                        disabled={hasSelectedDuration && hasSelectedLocation ? false : true}
                                     >
                                         Results
                                     </Button>
@@ -259,114 +230,14 @@ export default function Component() {
                             <BarChartIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
                         </CardHeader>
                         <CardContent className="overflow-auto">
-                            <CurvedlineChart className="container w-full h-[750px] overflow-y-scroll" location={selectedLocation} data={displayData} hasData={hasData} />
+                            <CurvedlineChart className="container w-full h-[750px] overflow-y-scroll" location={selectedLocation} data={displayData} hasData={hasData} duration={parseInt(selectedDuration)} />
                         </CardContent>
                     </Card>
                 </div>
-                {/* <Card className="bg-white">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[100px]">Invoice</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Method</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell className="font-medium">INV001</TableCell>
-                <TableCell>Paid</TableCell>
-                <TableCell>$250.00</TableCell>
-                <TableCell className="text-right">Credit Card</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="font-medium">INV002</TableCell>
-                <TableCell>Pending</TableCell>
-                <TableCell>$150.00</TableCell>
-                <TableCell className="text-right">PayPal</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="font-medium">INV003</TableCell>
-                <TableCell>Unpaid</TableCell>
-                <TableCell>$350.00</TableCell>
-                <TableCell className="text-right">Bank Transfer</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="font-medium">INV004</TableCell>
-                <TableCell>Paid</TableCell>
-                <TableCell>$450.00</TableCell>
-                <TableCell className="text-right">Credit Card</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="font-medium">INV005</TableCell>
-                <TableCell>Paid</TableCell>
-                <TableCell>$550.00</TableCell>
-                <TableCell className="text-right">PayPal</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </Card> */}
             </div>
         </div>
     )
 }
-
-function BarChart(props) {
-    const className = props.className;
-    return (
-        <div className={className}>
-            <ResponsiveBar
-                data={[]}
-                keys={["data"]}
-                indexBy="name"
-                margin={{ top: 0, right: 10, bottom: 55, left: 100 }}
-                padding={0.3}
-                valueScale={{ type: "linear" }}
-                indexScale={{ type: "band", round: true }}
-                colors={{ scheme: "set3" }}
-                borderWidth={1}
-                layout="horizontal"
-                borderColor={{
-                    from: "color",
-                    modifiers: [["darker", 0.2]],
-                }}
-                axisTop={null}
-                axisRight={null}
-                axisBottom={{
-                    tickSize: 5,
-                    tickPadding: 5,
-                    tickRotation: 0,
-                    legend: "Energy Consumed",
-                    legendPosition: "middle",
-                    legendOffset: 45,
-                    truncateTickAt: 0,
-                }}
-                // axisLeft={{
-                //   tickSize: 5,
-                //   tickPadding: 5,
-                //   tickRotation: 0,
-                //   legend: "Number",
-                //   legendPosition: "middle",
-                //   legendOffset: -45,
-                //   truncateTickAt: 0,
-                // }}
-                theme={{
-                    tooltip: {
-                        container: {
-                            fontSize: "12px",
-                        },
-                    },
-                }}
-                labelSkipWidth={12}
-                labelSkipHeight={12}
-                role="application"
-                ariaLabel="A bar chart showing data"
-            />
-        </div>
-    )
-}
-
 
 function BarChartIcon(props) {
     return (
@@ -385,29 +256,6 @@ function BarChartIcon(props) {
             <line x1="12" x2="12" y1="20" y2="10" />
             <line x1="18" x2="18" y1="20" y2="4" />
             <line x1="6" x2="6" y1="20" y2="16" />
-        </svg>
-    )
-}
-
-
-function CalendarIcon(props) {
-    return (
-        <svg
-            {...props}
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        >
-            <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
-            <line x1="16" x2="16" y1="2" y2="6" />
-            <line x1="8" x2="8" y1="2" y2="6" />
-            <line x1="3" x2="21" y1="10" y2="10" />
         </svg>
     )
 }
@@ -505,56 +353,6 @@ function PieChart(props /* see data tab */) {
                         spacing: 10
                     }
                 ]}
-                // fill={[
-                //     {
-                //         match: {
-                //             id: 'ruby'
-                //         },
-                //         id: 'dots'
-                //     },
-                //     {
-                //         match: {
-                //             id: 'c'
-                //         },
-                //         id: 'dots'
-                //     },
-                //     {
-                //         match: {
-                //             id: 'go'
-                //         },
-                //         id: 'dots'
-                //     },
-                //     {
-                //         match: {
-                //             id: 'python'
-                //         },
-                //         id: 'dots'
-                //     },
-                //     {
-                //         match: {
-                //             id: 'scala'
-                //         },
-                //         id: 'lines'
-                //     },
-                //     {
-                //         match: {
-                //             id: 'lisp'
-                //         },
-                //         id: 'lines'
-                //     },
-                //     {
-                //         match: {
-                //             id: 'elixir'
-                //         },
-                //         id: 'lines'
-                //     },
-                //     {
-                //         match: {
-                //             id: 'javascript'
-                //         },
-                //         id: 'lines'
-                //     }
-                // ]}
                 legends={[
                     {
                         anchor: 'bottom',
@@ -583,48 +381,65 @@ function PieChart(props /* see data tab */) {
             />
         </div>
     );
-
-
-    // <ResponsivePie
-    //     data={[{
-    //       "id": "javascript",
-    //       "value": 355,
-    //     },
-    //     {
-    //       "id": "ruby",
-    //       "value": 150,
-    //     }]}
-    //     margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
-    //     innerRadius={0.5}
-    //     padAngle={0.7}
-    //     cornerRadius={3}
-    //     colors={{ scheme: 'nivo' }}
-    //     borderWidth={1}
-    //     borderColor={{ from: 'color', modifiers: [['darker', 0.2]] }}
-    //     enableRadialLabels={false}
-    //     sliceLabel={({ datum }) => `${datum.id}: ${datum.value}`}
-    //     enableSlicesLabels={true}
-    //     slicesLabelsTextColor="#333333"
-    // />
-
-
 }
 
 function CurvedlineChart(props) {
-    if (!props.hasData) return (<div>No data to display</div>);
+    if (!props.hasData || props.duration == null) return (<div>No data to display</div>);
+    const isDayDuration = props.duration;
+
+    const transformData = (data, currentHour) => {
+        return data.map(d => ({
+            ...d,
+            data: d.data.map(point => {
+                let date = new Date();
+                if (point.x > currentHour) {
+
+                    date.setDate(date.getDate() - 1);
+                }
+                date.setHours(point.x, 0, 0, 0);
+                return { ...point, x: date };
+            })
+        }));
+    };
+
+    const currentHour = new Date().getHours();
+
+    const formattedData = isDayDuration == 0 ? transformData(props.data, currentHour) : props.data.map(d => ({
+        ...d,
+        data: d.data.map(point => ({
+            ...point,
+            x: new Date(point.x)
+        }))
+    }));
+
+    const xScale = {
+        type: "time",
+        format: isDayDuration == 0 ? "%H" : isDayDuration == 3 ? "%Y-%m-%d %H:%M:%S" : "%Y-%m-%d",
+        useUTC: false,
+        precision: isDayDuration == 0 ? "hour" : "day",
+    };
+
+    const xFormat = isDayDuration == 0 ? "time:%H" : isDayDuration == 3 ? "time:%Y-%m-%d" : "time:%Y-%m-%d";
+
+    const axisBottom = {
+        tickSize: 5,
+        tickPadding: 5,
+        tickRotation: 0,
+        legend: "Time",
+        legendOffset: 45,
+        legendPosition: "middle",
+        format: isDayDuration == 0 ? "%H" : isDayDuration == 3 ? "%b %d" : "%b %d",
+        tickValues: isDayDuration == 0 ? "every 1 hour" : isDayDuration == 3 ? "every 1 week" : isDayDuration == 2 ? "every 2 days" : "every 1 day",
+    };
+
     return (
         <div {...props}>
             <ResponsiveLine
-                data={props.data}
+                data={formattedData}
                 enableCrosshair={false}
                 margin={{ top: 50, right: 110, bottom: 250, left: 60 }}
-                xScale={{
-                    type: "time",
-                    format: "%Y-%m-%d",
-                    useUTC: false,
-                    precision: "day",
-                }}
-                xFormat="time:%Y-%m-%d"
+                xScale={xScale}
+                xFormat={xFormat}
                 yScale={{
                     type: "linear",
                     min: 0,
@@ -632,21 +447,12 @@ function CurvedlineChart(props) {
                 }}
                 axisTop={null}
                 axisRight={null}
-                axisBottom={{
-                    tickSize: 5,
-                    tickPadding: 5,
-                    tickRotation: 0,
-                    legend: "X",
-                    legendOffset: 45,
-                    legendPosition: "middle",
-                    format: "%b %d",
-                    tickValues: "every 1 day",
-                }}
+                axisBottom={axisBottom}
                 axisLeft={{
                     tickSize: 5,
                     tickPadding: 5,
                     tickRotation: 0,
-                    legend: "Y",
+                    legend: "Energy Consumed",
                     legendOffset: -45,
                     legendPosition: "middle",
                 }}
@@ -666,11 +472,11 @@ function CurvedlineChart(props) {
                 curve="monotoneX"
                 legends={[
                     {
-                        anchor: "bottom-right",
+                        anchor: "top-left",
                         direction: "column",
                         justify: false,
-                        translateX: -1000,
-                        translateY: 150,
+                        translateX: 0,
+                        translateY: 520,
                         itemsSpacing: 0,
                         itemDirection: "left-to-right",
                         itemWidth: 80,
@@ -693,23 +499,6 @@ function CurvedlineChart(props) {
     )
 }
 
-function DeviceIcon(props) {
-    return (
-        <div>
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24'"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round">
-                qqqq<rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-        </div>
-    )
-}
 function LocationIcon(props) {
     return (
         <div>
@@ -726,161 +515,5 @@ function LocationIcon(props) {
                 <path d="M9 22V12h6v10M2 10.6L12 2l10 8.6" />
             </svg>
         </div>
-    )
-}
-
-
-function ouseDollarSignIcon(props) {
-    return (
-        <svg
-            {...props}
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        >
-            <line x1="12" x2="12" y1="2" y2="22" />
-            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-        </svg>
-    )
-}
-
-
-function FlagIcon(props) {
-    return (
-        <svg
-            {...props}
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        >
-            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
-            <line x1="4" x2="4" y1="22" y2="15" />
-        </svg>
-    )
-}
-
-
-function FolderIcon(props) {
-    return (
-        <svg
-            {...props}
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        >
-            <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z" />
-        </svg>
-    )
-}
-
-
-function GroupIcon(props) {
-    return (
-        <svg
-            {...props}
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        >
-            <path d="M3 7V5c0-1.1.9-2 2-2h2" />
-            <path d="M17 3h2c1.1 0 2 .9 2 2v2" />
-            <path d="M21 17v2c0 1.1-.9 2-2 2h-2" />
-            <path d="M7 21H5c-1.1 0-2-.9-2-2v-2" />
-            <rect width="7" height="5" x="7" y="7" rx="1" />
-            <rect width="7" height="5" x="10" y="12" rx="1" />
-        </svg>
-    )
-}
-
-
-function LayoutDashboardIcon(props) {
-    return (
-        <svg
-            {...props}
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        >
-            <rect width="7" height="9" x="3" y="3" rx="1" />
-            <rect width="7" height="5" x="14" y="3" rx="1" />
-            <rect width="7" height="9" x="14" y="12" rx="1" />
-            <rect width="7" height="5" x="3" y="16" rx="1" />
-        </svg>
-    )
-}
-
-
-function UsersIcon(props) {
-    return (
-        <svg
-            {...props}
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        >
-            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-            <circle cx="9" cy="7" r="4" />
-            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-        </svg>
-    )
-}
-
-
-function ViewIcon(props) {
-    return (
-        <svg
-            {...props}
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        >
-            <path d="M5 12s2.545-5 7-5c4.454 0 7 5 7 5s-2.546 5-7 5c-4.455 0-7-5-7-5z" />
-            <path d="M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
-            <path d="M21 17v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2" />
-            <path d="M21 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2" />
-        </svg>
     )
 }

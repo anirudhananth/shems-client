@@ -85,7 +85,7 @@ export default function Component() {
             let types = await Object.keys(data);
             setAllowedTypes(types);
             setAllowedModels(data);
-            console.log("Um: ", types);
+            
             return new Response(JSON.stringify(data));
         } catch (err) {
             console.error(err);
@@ -170,7 +170,7 @@ export default function Component() {
     const changeType = (value) => {
         setCurrentType(value);
         setCurrentModel(allowedModels[value]);
-        console.log(allowedModels[value])
+        
     }
 
     const alterDeviceList = async (value) => {
@@ -288,14 +288,14 @@ export default function Component() {
                     </Select>
                 </div>
             </div>
-            <div className="w-[90%] h-[32rem] my-8 ml-[5%] mr-[5%] overflow-y-scroll bg-scroll">
+            <div className="w-[90%] h-[32rem] my-8 ml-[5%] mr-[5%] pr-[18%] overflow-y-scroll bg-scroll">
                 <Table className="min-w-full">
                     <TableHeader>
                         <TableRow>
                             <TableHead className="w-1/4 font-bold text-gray-600">Type</TableHead>
                             <TableHead className="w-1/4 font-bold text-gray-600">Model</TableHead>
-                            <TableHead className="w-1/4 font-bold text-gray-600">Address</TableHead>
-                            <TableHead className="w-1/4 font-bold"></TableHead>
+                            <TableHead className="w-1/2 font-bold text-gray-600">Address</TableHead>
+                            <TableHead className="w-1/8 font-bold"></TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -304,7 +304,7 @@ export default function Component() {
                                 <TableCell className="font-medium">{device.type}</TableCell>
                                 <TableCell>{device.modelNumber}</TableCell>
                                 <TableCell>{device.location.address}</TableCell>
-                                <TableCell className="text-begin">
+                                <TableCell className="text-begin w-[8px]">
                                     <form onSubmit={deleteDevice}>
                                         <Input id="id" type="hidden" value={device.id} name="id" />
                                         <Button className="w-fit text-black hover:text-gray-100 hover:bg-gray-400" size="sm" type="submit">

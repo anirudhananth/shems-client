@@ -21,7 +21,7 @@ Method | HTTP request | Description
 import OpenApiDefinition from 'open_api_definition';
 
 let apiInstance = new OpenApiDefinition.UserControllerApi();
-let userRequest = new OpenApiDefinition.UserRequest(); // UserRequest | 
+let userRequest = new OpenApiDefinition.UserRequest(); 
 apiInstance.register(userRequest, (error, data, response) => {
   if (error) {
     console.error(error);
