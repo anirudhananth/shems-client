@@ -221,7 +221,7 @@ export default function Component() {
                                         <SelectContent>
                                             {
                                                 allowedTypes.map((type, i) => (
-                                                    <SelectItem className="button cursor-pointer" type="button" id={i} value={type}>{type}</SelectItem>
+                                                    <SelectItem key={i} className="button cursor-pointer" type="button" id={i} value={type}>{type}</SelectItem>
                                                 ))
                                             }
                                         </SelectContent>
@@ -238,7 +238,7 @@ export default function Component() {
                                         <SelectContent>
                                             {
                                                 currentModel.map((type, i) => (
-                                                    <SelectItem className="button cursor-pointer" type="button" id={i} value={type}>{type}</SelectItem>
+                                                    <SelectItem key={i} className="button cursor-pointer" type="button" id={i} value={type}>{type}</SelectItem>
                                                 ))
                                             }
                                         </SelectContent>
@@ -254,7 +254,7 @@ export default function Component() {
                                         </SelectTrigger>
                                         <SelectContent>
                                             {locationList.map((location, i) => (
-                                                <SelectItem id={i} value={location.id.toString()}>{location.address}</SelectItem>
+                                                <SelectItem key={locationList.id} id={i} value={location.id.toString()}>{location.address}</SelectItem>
                                             ))}
                                         </SelectContent>
                                     </Select>
@@ -282,7 +282,7 @@ export default function Component() {
                         <SelectContent>
                             <SelectItem id={0} value="0">All Locations</SelectItem>
                             {locationList.map((location, i) => (
-                                <SelectItem id={i + 1} value={location.id.toString()}>{location.address}</SelectItem>
+                                <SelectItem key={locationList.id} id={i + 1} value={location.id.toString()}>{location.address}</SelectItem>
                             ))}
                         </SelectContent>
                     </Select>

@@ -174,7 +174,7 @@ export default function Component() {
                                             <SelectContent>
                                                 <SelectItem id={0} value="0">All Locations</SelectItem>
                                                 {locationList != [] && locationList.map((location, i) => (
-                                                    <SelectItem id={i + 1} value={location.id.toString().trim()}>{location.address.trim()}</SelectItem>
+                                                    <SelectItem key={locationList.id} id={i + 1} value={location.id.toString().trim()}>{location.address.trim()}</SelectItem>
                                                 ))}
                                             </SelectContent>
                                         </Select>

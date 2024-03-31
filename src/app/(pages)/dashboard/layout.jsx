@@ -14,9 +14,9 @@ export default function Component({ children }) {
   const pathname = usePathname();
 
   const { user, error, isLoading } = useUser();
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>{error.message}</div>;
-  if (!user) return router.push('/api/auth/login');
+  useEffect(() => {
+    if(user) updateCustomer(user.name, user.email);
+  });
 
   const updateCustomer = async (name, email) => {
     try {
@@ -40,11 +40,9 @@ export default function Component({ children }) {
     }
   };
 
-  
-
-  useEffect(() => {
-    updateCustomer(user.name, user.email);
-  }, []);
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>{error.message}</div>;
+  if (!user) return router.push('/api/auth/login');
 
   document.cookie = `accessToken=${user.sid}; path=/;`
 

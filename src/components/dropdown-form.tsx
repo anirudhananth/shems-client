@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 
-export function dropdown-form() {
+export function dropdown_form() {
   return (
     <Card>
       <CardHeader>
@@ -20,7 +20,7 @@ export function dropdown-form() {
         <form className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="voice-category">Voice Category</Label>
-            <Select id="voice-category">
+            <Select key="voice-category">
               <SelectTrigger>
                 <SelectValue placeholder="Select Voice Category" />
               </SelectTrigger>
@@ -33,7 +33,7 @@ export function dropdown-form() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="language-category">Language</Label>
-            <Select id="language-category">
+            <Select key="language-category">
               <SelectTrigger>
                 <SelectValue placeholder="Select Language" />
               </SelectTrigger>
@@ -46,7 +46,7 @@ export function dropdown-form() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="model-category">Model</Label>
-            <Select id="model-category">
+            <Select key="model-category">
               <SelectTrigger>
                 <SelectValue placeholder="Select Model" />
               </SelectTrigger>

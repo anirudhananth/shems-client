@@ -49,7 +49,7 @@ export default function Component() {
 
   useEffect(() => {
     getCustomer();
-  }, []);
+  });
 
 
   async function onSubmit(event) {

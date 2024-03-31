@@ -3,7 +3,7 @@ export const dynamic = 'force-dynamic'
 import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 import { getSession } from '@auth0/nextjs-auth0';
 
-export async function callApi() {
+export async function GET() {
     try {
         const session = await getSession();
         const accessToken = session?.accessToken;
@@ -23,6 +23,6 @@ export async function callApi() {
         
         return new Response(JSON.stringify(data));
     } catch (err) {
-        console.error("WHAT: ", err);
+        console.error("Error: ", err);
     }
 };

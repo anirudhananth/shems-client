@@ -92,7 +92,7 @@ export function main() {
                   <h3 className="text-lg font-semibold">John Doe</h3>
                 </CardHeader>
                 <CardContent>
-                  <p>"This platform has revolutionized our business."</p>
+                  <p>&quot;This platform has revolutionized our business.&quot;</p>
                 </CardContent>
               </Card>
               <Card>
@@ -101,7 +101,7 @@ export function main() {
                   <h3 className="text-lg font-semibold">Jane Smith</h3>
                 </CardHeader>
                 <CardContent>
-                  <p>"We've seen tremendous growth since using this platform."</p>
+                  <p>&quot;We&apos;ve seen tremendous growth since using this platform.&quot;</p>
                 </CardContent>
               </Card>
               <Card>
@@ -110,7 +110,7 @@ export function main() {
                   <h3 className="text-lg font-semibold">Bob Johnson</h3>
                 </CardHeader>
                 <CardContent>
-                  <p>"The features are amazing and easy to use."</p>
+                  <p>&quot;The features are amazing and easy to use.&quot;</p>
                 </CardContent>
               </Card>
             </div>
